@@ -1,0 +1,55 @@
+@mixin transform-style($value) {
+	-webkit-transform-style: $value;
+	-moz-transform-style: $value;
+	-o-transform-style: $value;
+	transform-style: $value;
+}
+
+@mixin perspective($value) {
+	-webkit-perspective: $value;
+	-moz-perspective: $value;
+	-o-perspective: $value;
+	perspective: $value;
+}
+
+@mixin backface-visibility($value) {
+	-webkit-backface-visibility: $value;
+	-moz-backface-visibility: $value;
+	-o-backface-visibility: $value;
+	backface-visibility: $value;
+}
+
+@mixin transition-prefixed($property, $duration, $easing: ease-in-out, $delay:false) {
+	@if $delay {
+		-webkit-transition: -webkit-#{$property} $duration $easing $delay;
+		-moz-transition: -moz-#{$property} $duration $easing $delay;
+		-o-transition: -o-#{$property} $duration $easing $delay;
+		transition: $property $duration $easing $delay;
+	} @else {
+		-webkit-transition: -webkit-#{$property} $duration $easing;
+		-moz-transition: -moz-#{$property} $duration $easing;
+		-o-transition: -o-#{$property} $duration $easing;
+		transition: $property $duration $easing;
+	}
+}
+
+@mixin transition($value...) {
+	-webkit-transition: $value;
+	-moz-transition: $value;
+	-o-transition: $value;
+	transition: $value;
+}
+
+@mixin transform($value...) {
+	-webkit-transform: $value;
+	-moz-transform: $value;
+	-o-transform: $value;
+	transform: $value;
+}
+
+@mixin user-select($value) {
+	-webkit-user-select: $value;
+	-moz-user-select: $value;
+	-o-user-select: $value;
+	user-select: $value;
+}
