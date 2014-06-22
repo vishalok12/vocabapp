@@ -2,49 +2,23 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>Vocab Tree</title>
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
     <!-- build:css(.tmp) styles/main.css -->
+    <link rel="stylesheet" href="bower_components/sass-bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="bower_components/fontawesome/css/font-awesome.css">
     <link rel="stylesheet" href="styles/style.css" type="text/css" media="screen">
     <link rel="stylesheet" href="styles/lib/perfect-scrollbar.css" type="text/css" media="screen">
     <!-- endbuild -->
   </head>
   <body class="hover">
-    <nav id="navigation">
-      <ul id="nav-links">
-        <li class="menu"><a href="#">Unremembered</a></li>
-        <li class="menu"><a href="#/remembered">Remembered</a></li>
-        <li class="menu"><a href="#/all">All</a></li>
-        <li id="play" class="menu">
-          <div>Play</div>
-          <div class="submenu">
-            <ul>
-              <li><a href="#/play/loop">Loop</a></li>
-            </ul>
-          </div>
-        </li>
-      </ul>
-      <section id="nav-search">
-        <input id="word-search" type="text">
-      </section>
+    <nav id="navigation" class="nav navbar-default" role="navigation">
     </nav>
     <div id="wrapper">
       <section id="dictionary"></section>
-      <section class="add-word word-card">
-        <div class="front-face">
-          <div class="word-input-wrapper">
-            <input id="name" type="text" placeholder="Insert Word">
-            <div class="loading hidden"></div>
-          </div>
-        </div>
-        <div class="back-face">
-          <div class="title">Meaning</div>
-          <textarea id="meaning" placeholder="Write Meaning..."></textarea>
-          <input id="synonyms" type="text" placeholder="Synonyms (comma separated)">
-          <input id="new-word-btn" type="button" value="done">
-          <div class="back">↩</div>
-        </div>
-      </section>
+      <section id="add-word" class="word-card"></section>
     </div>
     <div id="game-wrapper" style="display:none;">
       <div class="loop-game">
@@ -67,16 +41,15 @@
 
     <script type="text/javascript">
       (function() {
-        var timeToLook = true;
+        var hoverTimeout;
+
         window.onscroll = function(e) {
-          if (timeToLook) {
-            timeToLook = false;
-            $('body').removeClass('hover');
-            setTimeout(function() {
-              timeToLook = true;
-              $('body').addClass('hover');
-            }, 1000);
-          }
+          $('body').removeClass('hover');
+          
+          clearTimeout(hoverTimeout);
+          hoverTimeout = setTimeout(function() {
+            $('body').addClass('hover');
+          }, 1000);
         }
       })();
       

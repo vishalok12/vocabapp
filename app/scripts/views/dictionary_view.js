@@ -14,34 +14,36 @@ define([
     window.app = window.app || {};
 
     var DictionaryView = Backbone.View.extend({
-        el: '#wrapper',
+        el: '#dictionary',
 
-        events: {
-            'click .add-word .front-face': "checkAndFlip",
-            'keypress #name': "flipBack",
-            'click .add-word .back': "flipFront",
-            'click #new-word-btn': "getParams"
-        },
+        // events: {
+        //     'click .add-word .front-face': "checkAndFlip",
+        //     'keypress #name': "flipBack",
+        //     'click .add-word .back': "flipFront",
+        //     'click #new-word-btn': "getParams"
+        // },
 
         initialize: function(words) {
-            this.$dictionary = this.$el.find('#dictionary');
+            // this.$dictionary = this.$el.find('#dictionary');
             this.$addWord = this.$el.find('.add-word');
             
             this.collections = new DictionaryCollection();
             this.collections.fetch();
 
-            this.searchView = new SearchView(this);
+            // create search view, words are still being fetched using ajax!!
+            // that's why it's empty
+            this.searchView = new SearchView();
 
             this.listenTo(this.collections, "add", this.addWord);
             this.listenTo(this.collections, "destroy", this.removeWord);
             
-            this.render();
+            // this.render();
         },
 
         render: function(wordNames) {
             var filteredModels;
 
-            this.$dictionary.html('');
+            this.$el.empty();
             if (app.wordType === 'all') {
                 filteredModels = this.collections.models;
             } else {
@@ -76,59 +78,7 @@ define([
 
         renderWord: function(word) {
             var wordView = new WordView({ model: word });
-            this.$dictionary.append( wordView.render().el );
-        },
-
-        checkAndFlip: function(e) {
-            var clickedElement = e.originalEvent.srcElement;
-            var $input = $('#name');
-
-            if ( $input.val().trim() === '' || clickedElement === $input[0] ) { return; }
-
-            fetchMeaningAndFlip($input.val().trim());
-
-            return false;
-        },
-
-        flipBack: function(e) {
-            if ( e.keyCode === 13 ) {
-                fetchMeaningAndFlip($('#name').val().trim());
-            }
-        },
-
-        flipFront: function(e) {
-            flip( $(e.currentTarget).parent() );
-
-            $('#name').focus();
-
-            return false;
-        },
-
-        getParams: function() {
-            var wordName = $('#name').val().trim();
-            var meaning = $('#meaning').val().trim();
-            var synonyms = $('#synonyms').val()
-                                         .replace(/\s+/g, '')
-                                         .split(/,|;/)
-                                         .filter(function(synonym) {
-                                                return synonym !== '';
-                                         });
-
-            if (!wordName || !meaning) {
-                return;
-            }
-            
-            this.collections.create({
-                name: wordName,
-                meaning: meaning,
-                synonyms: synonyms
-            });
-
-            $('#name').val('');
-            $('#meaning').val('');
-            $('#synonyms').val('');
-
-            flip( $('.add-word .back-face') );
+            this.$el.append( wordView.render().el );
         }
 
     });
@@ -156,17 +106,7 @@ define([
             });
         });
     }
-
-    function fetchMeaningAndFlip(word) {
-        $('.add-word .loading').removeClass('hidden');
-        getMeaning(word, function(meaning) {
-            $('.add-word .loading').addClass('hidden');
-            $('#meaning').val(meaning);
-            flip($('.add-word .front-face'));
-            $('#meaning').focus();
-        });
-    }
-
+    
     function getMeaning(phrase, callback) {
         $.ajax({
             url: "http://glosbe.com/gapi/translate",
@@ -183,12 +123,12 @@ define([
         }).done(function(data) {
             var meanings;
             if (data && data.result == "ok" && data.tuc) {
-                meanings = _.pluck(data.tuc[0].meanings.slice(0,4), 'text').join('; ');
+                meanings = _.pluck(data.tuc[0].meanings.slice(0,4), 'text');
             } else {
                 meanings = '';
             }
             callback(meanings);
-        }).always(function() {
+        }).fail(function() {
             callback('');
         });
     }

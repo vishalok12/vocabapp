@@ -1,8 +1,15 @@
 @import "cross-browser-generator";
+@import "bootstrap-override";
+
+:focus {
+	outline: none;
+}
 
 body {
 	font-family: ubuntu;
 	margin: 0;
+	-webkit-user-select: none;
+	user-select: none;
 }
 
 ::selection {
@@ -18,8 +25,11 @@ ul {
 }
 
 #wrapper {
-	// overflow: overlay;
-	// min-height: 585px;
+	margin: 100px auto 20px;
+
+	& > section {
+		display: none;
+	}
 }
 
 .word-card {
@@ -36,9 +46,9 @@ ul {
 		display: none;
 	}
 	.front-face, .back-face {
-		width: 88%;
-		height: 92%;
-		padding: 4% 6%;
+		width: 100%;
+		height: 100%;
+		padding: 4% 2%;
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -48,21 +58,28 @@ ul {
 	}
 	.front-face {
 		background: rgb(132, 211, 121);
-		box-shadow: rgb(164, 209, 95) 1px 1px 6px, rgb(164, 209, 95) -1px -1px 6px;
+		// box-shadow: rgb(164, 209, 95) 1px 1px 6px, rgb(164, 209, 95) -1px -1px 6px;
+		border: #80C275 1px solid;
 		@include transform(rotateY(0deg));
 		z-index: 1;
 	}
 	.back-face {
-		background-color: rgb(146, 161, 209);
+		background-color: #92a1d1;
 		@include transform(rotateY(180deg));
-		box-shadow: rgb(137, 174, 226) 1px 1px 6px, rgb(137, 174, 226) -1px -1px 6px;
+		// box-shadow: rgb(137, 174, 226) 1px 1px 6px, rgb(137, 174, 226) -1px -1px 6px;
+		border: #7992B4 1px solid;
 		z-index: 0;
 	}
 	.word {
 		margin-top: 96px;
 		color: rgb(233, 60, 74);
+		// color: white;
 		font-size: 25px;
-		text-shadow: 1px 1px 0px rgb(133, 117, 118);
+		// text-shadow: 1px 1px 0px rgb(133, 117, 118);
+
+		label {
+			font-weight: normal;
+		}
 	}
 	.title {
 		font-size: 25px;
@@ -81,7 +98,7 @@ ul {
 	.meaning {
 		position: relative;
 		color: #244B3A;
-		width: 180px;
+		// width: 180px;
 		height: 142px;
 		overflow: hidden;
 		padding-right: 12px;
@@ -92,6 +109,12 @@ ul {
 			padding-left: 18px;
 			padding-top: 0;
 		}
+	}
+	.divider {
+		margin: 0;
+		border: 1px solid transparent;
+		box-shadow: 0px -1px 1px #6B6F7B inset;
+		height: 3px;
 	}
 	.m-desc {
 		text-align: left;
@@ -106,25 +129,32 @@ ul {
 		top: 8px;
 		border-radius: 15px;
 		font-size: 20px;
-		background: rgb(136, 216, 124);
-		color: rgb(129, 202, 118);
-		opacity: 0;
+		// background: #79C76E;
+		// color: #84d379;
 		@include user-select(none);
 	}
 	.remove {
 		right: 8px;
+		border: 1px solid #e04e4e;
+		color: #e04e4e;
+		opacity: 0.7;
 	}
 	.done-mark {
 		right: 45px;
+		border: 1px solid #66AF5C;
+		color: #66AF5C;
 	}
 	.edit {
 		right: 79px;
-		background: url('../images/edit.png') center no-repeat;
+		// background: url('../images/edit.png') center no-repeat;
+		background: url('../images/edit-hover.png') center no-repeat;
 		background-size: 24px !important;
 	}
 }
 
-.add-word {
+#add-word {
+	height: 320px;
+
 	.back-face {
 		cursor: auto;
 	}
@@ -132,35 +162,58 @@ ul {
 		position: absolute;
 		top: 8px;
 		padding: 8px 12px;
-		background: rgb(199, 97, 72);
+		background: #92a1d1;
 		border-radius: 18px;
 		right: 8px;
+		cursor: pointer;
 		@include user-select(none);
 	}
+
+	.meaning-list-cont {
+		height: 172px;
+		position: relative;
+		overflow: hidden;
+
+		.new-meaning-btn {
+			background: #92a1d1;
+			width: 36px;
+			height: 36px;
+			line-height: 20px;
+			border-radius: 18px;
+			color: rgb(45, 61, 112);
+			font-size: 20px;
+			text-align: center;
+			border: 1px solid #8487D6;
+		}
+	}
+
 }
 
 #new-word-btn {
-	padding: 8px 22px;
-	font-size: 20px;
-	border-radius: 6px;
-	border: none;
+	padding: 4px 16px;
+	font-size: 18px;
+	border-radius: 20px;
 	cursor: pointer;
-	box-shadow: 1px 1px 2px #646464;
-	position: absolute;
-	bottom: 18px;
-	left: 59px;
+	margin-top: 12px;
+	background: transparent;
+	border: 1px solid rgb(112, 127, 142);
+	color: white;
+
+	&:hover, &:active {
+		background: #A4D18A;
+	}
 }
 
 .word-input-wrapper {
-	margin-top: 100px;
+	margin-top: 130px;
 }
 
 #name {
 	border: none;
-	height: 26px;
+	height: 32px;
 	padding: 4px 20px 4px 10px;
 	font-size: 18px;
-	width: 130px;
+	width: 160px;
 	vertical-align: top;
 }
 
@@ -173,13 +226,49 @@ ul {
 	margin-left: -24px;
 }
 
-#meaning {
-	border: none;
-	height: 70px;
-	padding: 4px 10px;
+#meaning-list {
+	padding: 4px 24px;
 	font-size: 15px;
-	width: 88%;
-	max-width: 163px;
+	
+	.word-meaning {
+		position: relative;
+		margin: 3px 0;
+
+		&.editing {
+			.stored-value {
+				// display: none;
+			}
+			.edit-value {
+				display: block;
+			}
+		}
+	}
+
+	.stored-value {
+		border: 1px solid #8487D6;
+		padding: 2px;
+		background: #92a1d1;
+		color: white;
+		text-align: left;
+		min-height: 1.8em;
+	}
+
+	.edit-value {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		display: none;
+		resize: none;
+	}
+
+	.trash-icon {
+		position: absolute;
+		top: 6px;
+		right: -13px;
+		cursor: pointer;
+	}
 }
 
 #synonyms {
@@ -187,47 +276,26 @@ ul {
 	height: 26px;
 	padding: 4px 10px;
 	font-size: 18px;
-	width: 162px;
-	margin-top: 5px;
+	width: 92%;
+	margin-top: 12px;
 }
 
 .synonyms {
 	padding: 4px 10px;
 	font-size: 16px;
-	width: 162px;
-	position: absolute;
-	bottom: 6px;
+	width: 100%;
 	color: #244B3A;
 	text-align: left;
 
-	.label {
+	.label-txt {
 		opacity: 0.4;
 		@include user-select(none);
 	}
 }
 
 .hover {
-	.front-face:hover {
-		background: rgb(144, 230, 132);
-		.remove, .done-mark, .edit {
-			opacity: 1;
-		}
-	}
 	.back-face:hover {
 		background: rgb(171, 191, 255);
-	}
-	.remove:hover {
-		background: rgb(224, 78, 78);
-		color: rgb(190, 231, 85);
-		box-shadow: 0px 1px 2px rgba(224, 78, 78, 0.5);
-	}
-	.done-mark:hover {
-		background: rgb(253, 243, 0);
-		box-shadow: 0px 1px 2px rgba(224, 78, 78, 0.5);
-	}
-	.edit:hover {
-		// box-shadow: 0px 1px 2px rgba(224, 78, 78, 0.5);
-		background: url('../images/edit-hover.png') center no-repeat;
 	}
 	.remove, .done-mark {
 		&:active {
@@ -243,19 +311,17 @@ ul {
 }
 
 #nav-search {
-	text-align: right;
-	margin: 16px;
-	position: absolute;
-	top: 0;
-	right: 0;
+	margin: 3px;
 	background: #FFF;
 	border: solid #FFF;
 	border-width: 2px 5px;
 	border-radius: 4px;
+	width: 100%;
+	float: right;
 }
 
 #word-search {
-	width: 160px;
+	width: 100%;
 	padding: 6px 10px 6px 36px;
 	border: 1px solid rgb(0, 211, 51);
 	font-size: 18px;
@@ -277,56 +343,39 @@ ul {
 	width: 100%;
 	top: 0;
 	box-shadow: 0 1px 2px #125D75;
+	background: #44BFE6;
 	@include transform(translateZ(0));
 }
 
 #nav-links {
 	list-style: none;
-	padding: 25px 15px;
-	margin: 0;
 	background: #44BFE6;
 	opacity: 0.95;
-	
-	li {
-		cursor: pointer;
-	}
-
-	a {
-		text-decoration: none;
-		color: white;
-	}
 
 	.menu {
-		position: relative;
-		margin: 0 10px;
-		padding: 10px;
-		display: inline-block;
 		color: white;
+		background: #44BFE6;
 
-		.submenu {
-			display: none;
-			background: #22A5D8;
-			color: #FFF;
-			font-weight: bold;
-			position: absolute;
-			top: 35px;
-			border: 1px solid #63A0C9;
+		&.active {
+			& > a {
+				background: #3EB0D4;
+			}
 		}
 
 		ul {
 			padding: 0;
-			margin: 6px 0;
+			margin: 1px 0 0;
 		}
 
-		&:hover {
-			.submenu {
-				display: block;
-			}
-		}
+		// &:hover {
+		// 	.submenu {
+		// 		display: block;
+		// 	}
+		// }
 
 		li {
 			display: block;
-			padding: 5px 20px;
+			// padding: 5px 20px;
 
 			&:hover {
 				background: #2CBAF1;
@@ -336,7 +385,10 @@ ul {
 }
 
 #dictionary {
-	margin-top: 100px;
+	&::after {
+		content: "";
+		display: table;
+	}
 }
 
 .word-synonyms {
@@ -353,19 +405,21 @@ ul {
 }
 
 .loop-game {
-	width: 400px;
+	width: 100%;
 	height: 400px;
-	margin: 93px auto;
+	padding: 12px;
+	margin: 40px auto;
 	position: relative;
 
 	.word-container {
-		position: absolute;
-		height: 68%;
-		background: #FFF;
-		padding: 16%;
-		width: 68%;
-		border-radius: 200px;
+		height: 100%;
+		width: 100%;
 		overflow: hidden;
+	}
+
+	.word-card {
+		margin: 38px auto 0;
+		float: none;
 	}
 
 	.cover {
@@ -420,4 +474,26 @@ ul {
 
 .hidden {
 	opacity: 0;
+}
+
+@media (min-width: 320px) {
+	#wrapper {
+		width: 310px;
+
+		.word-card {
+			width: 90%;
+			margin: 10px 5% 5px;
+		}
+	}
+}
+
+@media (min-width: 768px) {
+	#wrapper {
+		width: 750px;
+
+		.word-card {
+			width: 240px;
+			margin: 5px;
+		}
+	}
 }

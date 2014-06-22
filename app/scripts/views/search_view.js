@@ -15,8 +15,9 @@ define([
             'keyup #word-search': "filterWords"
         },
 
-        initialize: function (dictionaryView) {
-            this.dictionaryView = dictionaryView;
+        initialize: function (words) {
+            // this.dictionaryView = dictionaryView;
+            this.words = words;
             this.$input = this.$el.find('#word-search');
             this.words = [];
         },
@@ -31,9 +32,9 @@ define([
             var i, j;
             var words = this.words;
 
-            if (!this.words) {
-                words = this.words = this.dictionaryView.collections.pluck('name');
-            }
+            // if (!this.words) {
+            //     words = this.words = this.dictionaryView.collections.pluck('name');
+            // }
             
             for (i = 0; i < words.length; i++) {
                 word = words[i].toLowerCase();
@@ -86,12 +87,11 @@ define([
             this.parseWordsToTree();
         },
 
+        // TODO: Use fuzzy search for better search results
         filterWords: function(e) {
-            console.log('called for filterWords');
-            
             var searchKey = this.$input.val();
             var words = this.getMatchedWords(searchKey);
-            this.dictionaryView.render(words);
+            app.dictionaryView.render(words);
         }
 
     });

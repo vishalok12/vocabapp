@@ -11,6 +11,7 @@ define([
             'name/:name': 'getWordByName',
             'remembered': 'showRemembered',
             'all': 'showAll',
+            'addword': 'addWord',
             'play/:name': 'playGame',
             '*actions': 'showToRemember'
         },
@@ -24,6 +25,8 @@ define([
             if (app.dictionaryView) {
                 app.dictionaryView.render();
             }
+            app.navBarView.highlight('remembered');
+            this.setCurrentView(app.dictionaryView);
         },
 
         showToRemember: function() {
@@ -31,6 +34,16 @@ define([
             if (app.dictionaryView){
                 app.dictionaryView.render();
             }
+            this.setCurrentView(app.dictionaryView);
+        },
+
+        addWord: function() {
+            // if (app.addWordView) {
+            //     app.addWordView.render();
+            // }
+            app.navBarView.highlight('add-word');
+            this.setCurrentView(app.addWordView);
+
         },
 
         showAll: function() {
@@ -38,12 +51,22 @@ define([
             if (app.dictionaryView) {
                 app.dictionaryView.render();
             }
+            app.navBarView.highlight('all');
+            this.setCurrentView(app.dictionaryView);
         },
 
         playGame: function(name) {
             new app.GameView({
                 type: name
             });
+        },
+
+        setCurrentView: function(currentView) {
+            if (app.currentView) {
+                app.currentView.$el.hide();
+            }
+            app.currentView = currentView;
+            currentView.$el.show();
         }
 
     });

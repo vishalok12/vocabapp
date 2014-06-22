@@ -3,7 +3,9 @@ var application_root = __dirname,
     express = require( 'express' ), //Web framework
     path = require( 'path' ), //Utilities for dealing with file paths
     mongoose = require( 'mongoose' ), //MongoDB integration
-    dispatcher = require('./server/lib/dispatcher.js'); //require custom dispatcher
+    dispatcher = require('./server/lib/dispatcher.js'), //require custom dispatcher
+    http = require('http'),
+    qs = require('querystring');
 
 //Create server
 var app = express();
@@ -40,6 +42,25 @@ app.configure( function() {
         //Where to serve static content
         app.use( express.static( path.join( application_root, 'app') ) );
 
+        // for 404 errors
+        app.use(function(request, response) {
+            // check if request accepts html
+            if (request.accepts('html')) {
+                response.render(application_root + '/app/404.html');
+                return;
+            }
+
+            // respond with json
+
+            if (request.accepts('json')) {
+                response.send({ error: 'Not found' });
+                return;
+            }
+
+            // default to plain-text
+            response.type('text').send('Not found');
+        });
+
         //Show all errors in development
         app.use( express.errorHandler({ dumpExceptions: true, showStack: true }));
     }
@@ -48,15 +69,24 @@ app.configure( function() {
         //Where to serve static content
         app.use( express.static( path.join( application_root, 'dist') ) );
     
+        app.use(function(request, response) {
+            response.render(application_root + '/dist/404.html');
+        });
+
         app.use( express.errorHandler());
     }
-
 });
 
 // Routes
 app.get( '/', function( request, response ) {
     //dispatch our request
     dispatcher.dispatch(request, response);
+});
+
+app.get('/logout', function(request, response) {
+    response.cookie('userid', null, { maxAge: -1 });
+
+    response.render(application_root + '/app/signup.html');
 });
 
 // signup
@@ -73,6 +103,24 @@ app.post('/signup', function(request, response) {
             response.cookie('userid', user._id, { maxAge: 5 * 24 * 60 * 60 * 1000 });
             request.session.userId = user._id;
             response.redirect('/');
+
+            // create a sample word
+            var word = new WordModel({
+                name: 'Sample',
+                meaning: 'A sample word meaning!!;' +
+                    'Add new words in your list;' + 
+                    'On Navigation Bar, Click "Add Word" to insert a new word',
+                remembered: false,
+                userId: user._id,
+                synonyms: ''
+            });
+            word.save( function( error ) {
+                if( !error ) {
+                    return console.log( 'created a sample word!!!' );
+                } else {
+                    return console.log( error );
+                }
+            });
 
             return console.log( 'created' );
         } else {
@@ -230,6 +278,38 @@ app.delete( '/api/words/:id', function( request, response ) {
             }
         });
     });
+});
+
+app.get('/api/meaning', function(request, response, next) {
+    var phrase = request.query.phrase;
+
+    http.get(
+        'http://glosbe.com/gapi/translate?from=eng&dest=eng&format=json&phrase=' +
+        phrase + '&pretty=true',
+        function(res) {
+            var str = '';
+            if (res.statusCode === 200) {
+                res.on('data', function(chunk){
+                    //do something with chunk
+                    str += chunk;
+                });
+
+                res.on("end", function() {
+                    response.send(JSON.parse(str));
+                });
+            } else {
+                next(new Error('error while fetching meaning'));
+            }
+        }
+    );
+
+    // req.on('error', function(e) {
+    //   console.log('problem with request: ' + e.message);
+    // });
+
+    // // write data to request body
+    // req.write(data);
+    // req.end();
 });
 
 //Start server

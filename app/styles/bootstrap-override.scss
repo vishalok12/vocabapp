@@ -1,0 +1,17 @@
+.navbar-default {
+    .navbar-toggle, .navbar-nav > .open > a {
+        background-color: #3EB0D4;
+
+        &:hover, &:focus {
+            background-color: #3EB0D4;
+        }
+    }
+}
+
+.dropdown-menu > li > a:hover {
+    background-color: #3EB0D4;
+}
+
+.no-padding {
+    padding: 0 !important;
+}

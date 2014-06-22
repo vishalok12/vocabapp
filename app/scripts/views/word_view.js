@@ -2,11 +2,10 @@
 
 define([
     'jquery',
-    'underscore',
     'backbone',
     'templates',
     'perfect-scrollbar'
-], function ($, _, Backbone, JST) {
+], function ($, Backbone, JST) {
     'use strict';
 
     var WordView = Backbone.View.extend({
@@ -34,7 +33,11 @@ define([
             //this.el is what we defined in tagName. use $el to get access to jQuery html() function
             this.$el.html( this.template( this.model.toJSON() ) )
                             .toggleClass('hide', this.isHidden())
-                            .find('.meaning').perfectScrollbar({suppressScrollX: true});
+                            .find('.meaning').perfectScrollbar({
+                                wheelSpeed: 20,
+                                wheelPropagation: true,
+                                suppressScrollX: true
+                            });
 
             return this;
         },
@@ -56,8 +59,10 @@ define([
         },
 
         pronounceWord: function() {
-            this.audio.src = "https://ssl.gstatic.com/dictionary/static/sounds/de/0/" +
-                this.model.get('name').toLowerCase() + ".mp3";
+            if (!this.audio.src) {
+                this.audio.src = "https://ssl.gstatic.com/dictionary/static/sounds/de/0/" +
+                    this.model.get('name').toLowerCase() + ".mp3";
+            }
             this.audio.play();
 
             return false;
@@ -77,8 +82,8 @@ define([
                 '-moz-transform': 'rotateY(90deg)'
             });
             this.$el.find('.back-face').css({
-                '-webkit-transform': 'rotateY(270deg)',
-                '-moz-transform': 'rotateY(270deg)'
+                '-webkit-transform': 'rotateY(90deg)',
+                '-moz-transform': 'rotateY(90deg)'
             });
         },
 
@@ -89,8 +94,8 @@ define([
                 '-moz-transform': 'rotateY(90deg)'
             });
             this.$el.find('.back-face').css({
-                '-webkit-transform': 'rotateY(270deg)',
-                '-moz-transform': 'rotateY(270deg)'
+                '-webkit-transform': 'rotateY(90deg)',
+                '-moz-transform': 'rotateY(90deg)'
             });
         },
 
@@ -100,7 +105,7 @@ define([
             
             if (this.animationType === "back") {
                 frontFaceAngle = 180;
-                backFaceAngle = 360;
+                backFaceAngle = 0;
                 zIndexFront = 0;
                 zIndexBack = 1;
             } else {

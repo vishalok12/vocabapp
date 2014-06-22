@@ -1,9 +1,6 @@
-/*global define*/
-
 define([
-    'underscore',
     'backbone'
-], function (_, Backbone) {
+], function (Backbone) {
     'use strict';
 
     var WordModel = Backbone.Model.extend({
@@ -16,7 +13,7 @@ define([
             response.synonyms = response.synonyms ? response.synonyms.split(',') : [];
             return response;
         },
-        validate: function(attributes, options) {
+        validate: function(attributes) {
             if (!attributes.name || !attributes.meaning) {
                 return 'name and meaning both should be passed';
             }
