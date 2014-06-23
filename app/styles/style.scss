@@ -412,13 +412,13 @@ ul {
 	position: relative;
 
 	.word-container {
-		height: 100%;
+		height: 275px;
 		width: 100%;
 		overflow: hidden;
 	}
 
 	.word-card {
-		margin: 38px auto 0;
+		margin: 0 auto;
 		float: none;
 	}
 
@@ -435,9 +435,8 @@ ul {
 	}
 
 	.game-buttons {
-		position: absolute;
-		bottom: 20px;
-		left: 34%;
+		text-align: center;
+		margin-top: 10px;
 	}
 
 	.game-option {
