@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Welcome To VocabTree</title>
+    <link rel="stylesheet" href="styles/5aa43c85.signup.css" media="screen">
+  </head>
+  <body>
+    <div class="sign-in">
+      <form id="signin-form" method="post" name="signin" action="/session">
+        <div>
+          <input id="signin-email" type="text" name="userName" placeholder="Email" autofocus="autofocus" required="" class="inputtext">
+        </div>
+        <div class="clearfix">
+          <div class="lfloat">
+            <input id="signin-password" type="password" name="password" placeholder="Password" required="" class="inputtext">
+          </div>
+          <div class="rfloat">
+            <button id="signin-btn" type="submit" class="btn">Sign in</button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="reg-box">
+      <h2>Sign Up</h2>
+      <form id="reg" method="post" name="reg" action="/signup">
+        <div id="reg-form-box" class="signup-box">
+          <div class="clearfix">
+            <div class="mrm lfloat">
+              <input id="first-name" type="text" name="firstName" placeholder="First Name" required="" class="inputtext">
+            </div>
+            <div class="mbm rfloat">
+              <input id="last-name" type="text" name="lastName" placeholder="Last Name" required="" class="inputtext">
+            </div>
+          </div>
+          <div class="clearfix">
+            <div class="mrm lfloat">
+              <input id="email-id" type="email" name="email" placeholder="Enter Email" required="" class="inputtext">
+            </div>
+            <div class="mbm rfloat">
+              <input id="user-password" type="password" name="password" placeholder="Enter Password" required="" class="inputtext">
+            </div>
+          </div>
+          <div class="clearfix">
+            <button id="signup-btn" type="submit" class="rfloat btn">Sign Up</button><span id="async_status" class="hidden-elem"><img src="images/4e951030.async-submit.gif" width="16" height="11" class="img"></span>
+          </div>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
