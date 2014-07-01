@@ -16,13 +16,6 @@ define([
     var DictionaryView = Backbone.View.extend({
         el: '#dictionary',
 
-        // events: {
-        //     'click .add-word .front-face': "checkAndFlip",
-        //     'keypress #name': "flipBack",
-        //     'click .add-word .back': "flipFront",
-        //     'click #new-word-btn': "getParams"
-        // },
-
         initialize: function(words) {
             // this.$dictionary = this.$el.find('#dictionary');
             this.$addWord = this.$el.find('.add-word');
@@ -36,8 +29,6 @@ define([
 
             this.listenTo(this.collections, "add", this.addWord);
             this.listenTo(this.collections, "destroy", this.removeWord);
-            
-            // this.render();
         },
 
         render: function(wordNames) {
@@ -58,9 +49,20 @@ define([
                     return wordNames.indexOf(model.get('name')) + 1;
                 });
             }
+
+            var wordViews = [];
+            var $words = $('<div class="word-container">');
             filteredModels.map(function(word) {
-                this.renderWord(word);
+                var wordView = new WordView({ model: word });
+                $words.append( wordView.render().el );
+                wordViews.push(wordView);
             }, this);
+
+            this.$el.append($words);
+
+            for (var i = 0; i < wordViews.length; i++) {
+                wordViews[i].afterAppend();
+            }
 
             hideOtherContainers();
 
@@ -78,7 +80,13 @@ define([
 
         renderWord: function(word) {
             var wordView = new WordView({ model: word });
-            this.$el.append( wordView.render().el );
+            var $wordContainer = this.$('.word-container');
+            if (!$wordContainer.length) {
+                $wordContainer = $('<div class="word-container">');
+                this.$el.append($wordContainer);
+            }
+            $wordContainer.append( wordView.render().el );
+            wordView.afterAppend();
         }
 
     });

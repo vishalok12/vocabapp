@@ -32,12 +32,7 @@ define([
         render: function() {
             //this.el is what we defined in tagName. use $el to get access to jQuery html() function
             this.$el.html( this.template( this.model.toJSON() ) )
-                            .toggleClass('hide', this.isHidden())
-                            .find('.meaning').perfectScrollbar({
-                                wheelSpeed: 20,
-                                wheelPropagation: true,
-                                suppressScrollX: true
-                            });
+                            .toggleClass('hide', this.isHidden());
 
             return this;
         },
@@ -124,6 +119,14 @@ define([
                 '-webkit-transform': 'rotateY(' + backFaceAngle + 'deg)',
                 '-moz-transform': 'rotateY(' + backFaceAngle + 'deg)',
                 'z-index': zIndexBack
+            });
+        },
+
+        afterAppend: function() {
+            this.$el.find('.meaning').perfectScrollbar({
+                wheelSpeed: 20,
+                wheelPropagation: true,
+                suppressScrollX: true
             });
         }
     });

@@ -12,7 +12,7 @@ define([
         template: JST['app/scripts/templates/navbar.ejs'],
 
         events: {
-            'click .menu': "makeCurrent"
+            'click .menu:not(".dropdown")': "makeCurrent"
         },
 
         initialize: function() {
@@ -30,7 +30,7 @@ define([
         makeCurrent: function(e) {
             this.$el.find('.menu').removeClass('active');
             $(e.currentTarget).addClass('active');
-            // this.$target.collapse('hide');
+            this.$target.collapse('hide');
         },
 
         highlight: function(nav) {
