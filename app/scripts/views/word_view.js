@@ -18,6 +18,7 @@ define([
             'click .back-face': "flipBack",
             'click .remove': "deleteWord",
             'click .done-mark': "toggleRemembered",
+            'click .edit': "edit",
             'click .word label': "pronounceWord",
             'transitionend .front-face': "performRestAnimation"
         },
@@ -32,12 +33,7 @@ define([
         render: function() {
             //this.el is what we defined in tagName. use $el to get access to jQuery html() function
             this.$el.html( this.template( this.model.toJSON() ) )
-                            .toggleClass('hide', this.isHidden())
-                            .find('.meaning').perfectScrollbar({
-                                wheelSpeed: 20,
-                                wheelPropagation: true,
-                                suppressScrollX: true
-                            });
+                            .toggleClass('hide', this.isHidden());
 
             return this;
         },
@@ -125,6 +121,20 @@ define([
                 '-moz-transform': 'rotateY(' + backFaceAngle + 'deg)',
                 'z-index': zIndexBack
             });
+        },
+
+        afterAppend: function() {
+            this.$el.find('.meaning').perfectScrollbar({
+                wheelSpeed: 20,
+                wheelPropagation: true,
+                suppressScrollX: true
+            });
+        },
+
+        edit: function() {
+            app.dictionaryView.editWord(this.model);
+            
+            return false;
         }
     });
 

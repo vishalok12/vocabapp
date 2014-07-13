@@ -4,17 +4,25 @@ body {
 	margin: 0;
 }
 
+textarea, input {
+	outline-color: rgb(119, 255, 119);
+}
+
+button, button:hover, button:active {
+	outline: 0 !important;
+}
+
 .sign-in {
 	background: rgba(255, 255, 255, 0.5);
 	border-radius: 16px;
-	width: 300px;
+	width: 450px;
 	margin: -16px auto 0;
 	padding: 32px 20px 20px;
 }
 
 .reg-box {
 	width: 450px;
-	margin: 130px auto 0;
+	margin: 90px auto 0;
 	background: rgba(255, 255, 255, 0.5);
 	border-radius: 16px;
 
@@ -56,11 +64,11 @@ form {
 }
 
 .inputtext {
-	width: 178px;
+	width: 100%;
 	font-size: 16px;
 	border: 1px solid #E3FFA6;
 	padding: 6px;
-	margin: 2px;
+	margin: 2px 0;
 }
 
 .btn {
@@ -74,7 +82,8 @@ form {
 	background: -moz-linear-gradient(top, #5E7929, #8BAC4A);
 	background: linear-gradient(top, #5E7929, #8BAC4A);
 	cursor: pointer;
-	margin-bottom: 2px;
+	width: 100px;
+	margin-top: 8px;
 
 	&:hover {
 		background: -webkit-linear-gradient(top, #A2BE6C, #BEE78B);
@@ -84,8 +93,12 @@ form {
 	}
 
 	&:active {
-		margin: 4px 0 0;
+		margin: 10px 0 0;
 		box-shadow: none;
+		background: -webkit-linear-gradient(top, #A2BE6C, #BEE78B);
+		background: -moz-linear-gradient(top, #A2BE6C, #BEE78B);
+		background: linear-gradient(top, #A2BE6C, #BEE78B);
+		color: #32631B;
 	}
 }
 
@@ -93,10 +106,14 @@ form {
 	display: none;
 }
 
-#signin-email {
-	width: 284px;
+@media (max-width: 600px) {
+	.reg-box {
+		width: 94%;
+	}
+	.sign-in {
+		width: 94%;
+	}
 }
 
-#signin-password {
-	width: 208px;
+@media (min-width: 768px) {
 }
