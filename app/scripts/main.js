@@ -33,8 +33,9 @@ require([
     'views/navbar_view',
     'routes/word',
     'views/add_word_view',
-    'views/game_view'
-], function (Backbone, DictionaryView, NavBarView, WordRouter, AddWordView, GameView) {
+    'views/game_view',
+    'views/edit_word_view'
+], function (Backbone, DictionaryView, NavBarView, WordRouter, AddWordView, GameView, EditWordView) {
     new WordRouter();
 
     app.navBarView = new NavBarView();
@@ -42,6 +43,8 @@ require([
     app.dictionaryView = new DictionaryView();
 
     app.addWordView = new AddWordView();
+
+    app.editWordView = new EditWordView();
 
     app.GameView = GameView;
 

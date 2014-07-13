@@ -87,6 +87,13 @@ define([
             }
             $wordContainer.append( wordView.render().el );
             wordView.afterAppend();
+        },
+
+        editWord: function(model) {
+            app.editWordView.render(model);
+            $('#edit-word').show();
+            window.scrollTo(0,0);
+            $('html').css('overflow', 'hidden');
         }
 
     });
@@ -140,7 +147,6 @@ define([
             callback('');
         });
     }
-
 
     function hideOtherContainers() {
         $('#game-wrapper').hide();

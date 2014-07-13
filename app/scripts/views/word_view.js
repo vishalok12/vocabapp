@@ -18,6 +18,7 @@ define([
             'click .back-face': "flipBack",
             'click .remove': "deleteWord",
             'click .done-mark': "toggleRemembered",
+            'click .edit': "edit",
             'click .word label': "pronounceWord",
             'transitionend .front-face': "performRestAnimation"
         },
@@ -128,6 +129,12 @@ define([
                 wheelPropagation: true,
                 suppressScrollX: true
             });
+        },
+
+        edit: function() {
+            app.dictionaryView.editWord(this.model);
+            
+            return false;
         }
     });
 
