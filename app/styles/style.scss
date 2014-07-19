@@ -521,6 +521,40 @@ ul {
 	opacity: 0;
 }
 
+#notification {
+	display: block;
+	position: fixed;
+	top: 100px;
+	left: 0;
+	width: 100%;
+	background: #60afdf;
+	color: white;
+	height: 42px;
+	font-size: 18px;
+	padding: 2px 16px;
+
+	.undo-text {
+		line-height: 42px;
+	}
+
+	.undo-action {
+		position: absolute;
+		top: 3px;
+		right: 10px;
+		background: rgb(143, 207, 136);
+		border: none;
+		color: white;
+		padding: 5px;
+		box-shadow: 1px 1px 1px rgb(92, 92, 92);
+
+		&:active {
+			top: 4px;
+			right: 8px;
+			box-shadow: none;
+		}
+	}
+}
+
 @media (min-width: 320px) {
 	#wrapper {
 		width: 310px;
