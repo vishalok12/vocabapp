@@ -16,7 +16,7 @@ define([
         events: {
             'click .front-face': "flip",
             'click .back-face': "flipBack",
-            'click .remove': "deleteWord",
+            'click .remove': "showDeleteNotification",
             'click .done-mark': "toggleRemembered",
             'click .edit': "edit",
             'click .word label': "pronounceWord",
@@ -24,9 +24,12 @@ define([
         },
 
         initialize: function() {
+            console.log('initialize for model', this.model.get('name'));
             // this.listenTo(this.model, "add", this.render);
             this.listenTo(this.model, "change", this.render);
+            this.listenTo(app.notificationView, "undo:delete", this.cancelDeleteAction);
             this.audio = new Audio();
+            this.deleteNotificationPeriod = 5000;
             // this.listenTo(this.model, "remove", this.remove);
         },
 
@@ -36,6 +39,27 @@ define([
                             .toggleClass('hide', this.isHidden());
 
             return this;
+        },
+
+        showDeleteNotification: function() {
+            console.log('show notification for undo action!!');
+            app.notificationView.display('Deleted...', this.deleteNotificationPeriod);
+
+            var that = this;
+
+            this.deleteTimeoutId = setTimeout(function() {
+                console.log('finally deleting word...');
+                that.deleteWord();
+            }, this.deleteNotificationPeriod);
+
+            this.$el.addClass('hide');
+
+            return false;
+        },
+
+        cancelDeleteAction: function() {
+            clearTimeout(this.deleteTimeoutId);
+            this.$el.removeClass('hide');
         },
 
         deleteWord: function() {
