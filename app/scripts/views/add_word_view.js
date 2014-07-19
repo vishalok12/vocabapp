@@ -87,6 +87,8 @@ define([
             $('#synonyms').val('');
 
             flip( this.$('.back-face') );
+
+            _gaq.push(['_trackEvent', 'word', 'create', wordName]);
         },
 
         fetchMeaningAndFlip: function(word) {
