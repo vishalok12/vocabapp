@@ -31,6 +31,7 @@ define([
             this.$el.find('.menu').removeClass('active');
             $(e.currentTarget).addClass('active');
             this.$target.collapse('hide');
+            _gaq.push(['_trackEvent', 'Navigation', 'click', e.currentTarget.textContent]);
         },
 
         highlight: function(nav) {
