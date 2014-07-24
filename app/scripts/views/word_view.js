@@ -58,8 +58,11 @@ define([
         },
 
         cancelDeleteAction: function() {
-            clearTimeout(this.deleteTimeoutId);
-            this.$el.removeClass('hide');
+            if (this.deleteTimeoutId) {
+                clearTimeout(this.deleteTimeoutId);
+                this.deleteTimeoutId = null;
+                this.$el.removeClass('hide');
+            }
         },
 
         deleteWord: function() {
