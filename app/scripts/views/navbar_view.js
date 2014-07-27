@@ -18,6 +18,7 @@ define([
         initialize: function() {
             this.render();
             this.$target = this.$el.find('#navbar-collapse-1');
+            this.$search = this.$('#nav-search');
         },
 
         render: function() {
@@ -39,11 +40,20 @@ define([
             switch(nav) {
                 case 'add-word':
                     this.$('.add-new-word').addClass('active');
+                    this.hideSearchBar();
                     break;
                 default:
                     this.$('.' + nav).addClass('active');
                     break;
             }
+        },
+
+        hideSearchBar: function() {
+            this.$search.addClass('hide');
+        },
+
+        showSearchBar: function() {
+            this.$search.removeClass('hide');
         }
     });
 

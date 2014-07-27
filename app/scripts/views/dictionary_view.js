@@ -19,7 +19,7 @@ define([
         initialize: function(words) {
             // this.$dictionary = this.$el.find('#dictionary');
             this.$addWord = this.$el.find('.add-word');
-            
+
             this.collections = new DictionaryCollection();
             this.collections.fetch();
 
@@ -121,7 +121,7 @@ define([
             });
         });
     }
-    
+
     function getMeaning(phrase, callback) {
         $.ajax({
             url: "http://glosbe.com/gapi/translate",
@@ -151,6 +151,7 @@ define([
     function hideOtherContainers() {
         $('#game-wrapper').hide();
         $('#wrapper').show();
+        app.navBarView.showSearchBar();
     }
 
 
