@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+
+    <title>Vocab Tree</title>
+
+    <script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-43963934-1']);
+      _gaq.push(['_setDomainName', 'vocabtree.herokuapp.com']);
+      _gaq.push(['_trackPageview']);
+
+    </script>
+
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="styles/1d1ac33f.main.css" media="screen">
+  </head>
+  <body class="hover">
+    <nav id="navigation" class="nav navbar-default" role="navigation">
+    </nav>
+    <div id="wrapper">
+      <section id="dictionary"></section>
+      <section id="add-word" class="word-card"></section>
+      <section id="edit-word"></section>
+      <section id="notification"></section>
+    </div>
+    <div id="game-wrapper" style="display:none">
+      <div class="loop-game">
+        <div class="word-container"></div>
+        <div class="overlay"></div>
+        <div class="game-buttons">
+          <ul>
+            <li id="lg-remembered" class="game-option">✓</li>
+            <li id="lg-not-remembered" class="game-option">✖</li>
+            <li id="lg-next" class="game-option">➡</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <script data-main="scripts/50653a6e.main" src="bower_components/requirejs/require.js"></script>
+
+    <script type="text/javascript">
+      (function() {
+        var hoverTimeout;
+
+        window.onscroll = function(e) {
+          $('body').removeClass('hover');
+          
+          clearTimeout(hoverTimeout);
+          hoverTimeout = setTimeout(function() {
+            $('body').addClass('hover');
+          }, 1000);
+        }
+      })();
+      
+    </script>
+
+    <script type="text/javascript">
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>
