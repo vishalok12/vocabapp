@@ -34,7 +34,7 @@ this.dispatch = function(req, res) {
 		var path = dir + '/index.html';
 
 		if (!req.cookies.userid) {
-			path = dir + '/signup.html';
+			path = dir + '/homepage.html';
 		}
 
 		req.session.userId = decodeURIComponent( req.cookies.userid );

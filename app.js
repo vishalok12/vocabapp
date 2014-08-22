@@ -68,7 +68,7 @@ app.configure( function() {
     if (app.get('env') == "production") {
         //Where to serve static content
         app.use( express.static( path.join( application_root, 'dist') ) );
-    
+
         app.use(function(request, response) {
             response.render(application_root + '/dist/404.html');
         });
@@ -83,10 +83,14 @@ app.get( '/', function( request, response ) {
     dispatcher.dispatch(request, response);
 });
 
+app.get('/login', function(request, response) {
+	response.render(application_root + '/app/signin.html');
+});
+
 app.get('/logout', function(request, response) {
     response.cookie('userid', null, { maxAge: -1 });
 
-    response.render(application_root + '/app/signup.html');
+    response.redirect('/');
 });
 
 // signup
@@ -108,7 +112,7 @@ app.post('/signup', function(request, response) {
             var word = new WordModel({
                 name: 'Sample',
                 meaning: 'A sample word meaning!!;' +
-                    'Add new words in your list;' + 
+                    'Add new words in your list;' +
                     'On Navigation Bar, Click "Add Word" to insert a new word',
                 remembered: false,
                 userId: user._id,

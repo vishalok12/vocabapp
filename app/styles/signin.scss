@@ -20,32 +20,8 @@ button, button:hover, button:active {
 	padding: 32px 20px 20px;
 }
 
-.reg-box {
-	width: 450px;
-	margin: 90px auto 0;
-	background: rgba(255, 255, 255, 0.5);
-	border-radius: 16px;
-
-	h2 {
-		font-size: 24px;
-		border-bottom: 1px solid #808080;
-		padding: 14px 25px 14px;
-		background: #FFF;
-		border-radius: 16px 16px 0 0;
-		color: #808080;
-		text-shadow: 1px 1px 0px #E4E4E4;
-		font-weight: normal;
-		margin: 0;
-	}
-}
-
 form {
 	margin: 0;
-}
-
-.signup-box {
-	padding: 25px;
-	overflow: auto;
 }
 
 .clearfix {
@@ -108,9 +84,6 @@ form {
 }
 
 @media (max-width: 600px) {
-	.reg-box {
-		width: 94%;
-	}
 	.sign-in {
 		width: 94%;
 	}
