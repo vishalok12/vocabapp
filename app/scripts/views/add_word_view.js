@@ -66,8 +66,10 @@ define([
                 }
             });
             var synonyms = $('#synonyms').val()
-                                         .replace(/\s+/g, '')
                                          .split(/,|;/)
+                                         .map(function(synonym) {
+                                         		return synonym.trim();
+                                         })
                                          .filter(function(synonym) {
                                                 return synonym !== '';
                                          });
@@ -75,7 +77,7 @@ define([
             if (!wordName || !meaning) {
                 return;
             }
-            
+
             app.dictionaryView.collections.create({
                 name: wordName,
                 meaning: meaning,
@@ -149,7 +151,7 @@ define([
             },
         }).done(function(data) {
             var meanings, synonyms;
-            
+
             if (data && data.result == "ok" && data.tuc) {
                 meanings = _.pluck(
                     _.flatten(

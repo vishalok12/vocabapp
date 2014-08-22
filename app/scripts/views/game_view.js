@@ -40,6 +40,8 @@ define([
             this.$wordContainer = this.$el.find('.word-container');
             this.$gameButtons = this.$el.find('.game-option');
             this.$nextButton = this.$el.find('#lg-next');
+	    this.$overlay = this.$('.overlay');
+
             hideOtherContainers();
         },
 
@@ -75,10 +77,11 @@ define([
         markWordNotRemembered: function() {
             if (!this.acceptAnswer()) { return; }
             this.acceptAnswer(false);
-            
+
             this.nextWordPool.push(this.wordPool.shift());
             checkWordPool(this);
             this.wordView.flip();
+	    this.$overlay.addClass('hide');
         },
 
         /**
@@ -88,6 +91,8 @@ define([
             if (this.wordPool.length) {
                 this.render();
             }
+
+            this.$overlay.removeClass('hide');
         },
 
         acceptAnswer: function(canAnswer) {
@@ -117,6 +122,7 @@ define([
     function hideOtherContainers() {
         $('#wrapper').hide();
         $('#game-wrapper').show();
+        app.navBarView.hideSearchBar();
     }
 
     return GameView;
