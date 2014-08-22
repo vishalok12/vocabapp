@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+
+    <title>Vocab Tree</title>
+
+    <script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-43963934-1']);
+      _gaq.push(['_setDomainName', 'vocabtree.herokuapp.com']);
+      _gaq.push(['_trackPageview', '/homepage.html']);
+
+    </script>
+
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="styles/1bb4fd45.homepage.css" media="screen">
+  </head>
+  <body>
+    <section class="intro container">
+      <div class="intro-menu row">
+
+        <div class="column">
+          <a href="/login" title="Sign In" class="button sign-in pull-right">Sign In</a>
+          <!-- <a href="http://vocabtree.herokuapp.com/blog" title="Blog" class="button blog">Blog</a> -->
+        </div>
+
+      </div>
+
+      <div class="intro-content">
+
+          <div class="intro-logo">
+            VocabApp
+          </div>
+
+          <h1>New way to learn <strong class="blue">vocabulary</strong>,
+            quickly and easily</h1>
+
+        </div>
+
+        <div class="signup-form">
+          <form id="reg" method="post" name="reg" action="/signup">
+            <div class="form-group row">
+              <div class="col-xs-12">
+              	<input class="form-control" type="text" name="firstName" placeholder="First Name" required="">
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-xs-12">
+              	<input class="form-control" type="text" name="lastName" placeholder="Last Name" required="">
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-xs-12">
+              	<input class="form-control" type="email" name="email" placeholder="Your Email" required="">
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-xs-12">
+                <input type="password" name="password" class="form-control" placeholder="Password" required="">
+              </div>
+            </div>
+            <div class="form-group">
+              <button type="submit" class="btn btn-block btn-info">Sign Up</button>
+            </div>
+          </form>
+
+        </div>
+    </section>
+
+    <section class="details">
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+        <nav class="footer-links">
+          <ul>
+            <li class="active">
+              <a href="#">Home</a>
+            </li>
+            <li>
+              <a href="#">About</a>
+            </li>
+            <li>
+              <a href="#">Blog</a>
+            </li>
+            <li>
+              <a href="#">Contact</a>
+            </li>
+          </ul>
+        </nav>
+        <div class="social-btns">
+          <a href="#" class="social-btn btn-facebook"><i class="fa fa-facebook"></i></a>
+          <a href="#" class="social-btn btn-twitter"><i class="fa fa-twitter"></i></a>
+          <a href="#" class="social-btn btn-google-plus"><i class="fa fa-google-plus"></i></a>
+        </div>
+        <div class="additional-links">
+          Created by <a href="http://twitter.com/vishal_ok12">Vishal Kumar</a>
+        </div>
+      </div>
+    </footer>
+
+    <script type="text/javascript">
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>
