@@ -151,7 +151,7 @@ app.post('/session', function(request, response) {
 		console.log(err);
 		console.log(userDetails);
 		if( !err ) {
-			if (userDetails.password === password) {
+			if (userDetails && userDetails.password === password) {
 				console.log('matched');
 				response.cookie('userid', userDetails._id, { maxAge: 5 * 24 * 60 * 60 * 1000 });
 				request.session.userId = userDetails._id;
