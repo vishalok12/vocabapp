@@ -147,6 +147,14 @@ app.post('/session', function(request, response) {
 	console.log('email: ' + email);
 	console.log('password: ' + password);
 
+	if (!email || !password) {
+		console.log('some values not filled!!');
+		response.redirect('/');
+	} else {
+		email = email.trim();
+		password = password.trim();
+	}
+
 	UserModel.findOne( {email: email}, function(err, userDetails) {
 		console.log(err);
 		console.log(userDetails);
@@ -159,7 +167,7 @@ app.post('/session', function(request, response) {
 			} else {
 				console.log('unmatched');
 
-				response.redirect("/");
+				response.redirect('/');
 			}
 		} else {
 			return console.log( err );
