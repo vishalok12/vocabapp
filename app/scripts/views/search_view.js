@@ -1,118 +1,118 @@
 /*global define*/
 
 define([
-    'jquery',
-    'underscore',
-    'backbone',
-    'templates'
+	'jquery',
+	'underscore',
+	'backbone',
+	'templates'
 ], function ($, _, Backbone, JST) {
-    'use strict';
+	'use strict';
 
-    var SearchView = Backbone.View.extend({
-        el: '#nav-search',
+	var SearchView = Backbone.View.extend({
+		el: '#nav-search',
 
-        events: {
-            'keyup #word-search': "filterWords"
-        },
+		events: {
+			'input #word-search': "filterWords"
+		},
 
-        initialize: function (words) {
-            // this.dictionaryView = dictionaryView;
-            this.words = words;
-            this.$input = this.$el.find('#word-search');
-            this.words = [];
-        },
+		initialize: function (words) {
+			// this.dictionaryView = dictionaryView;
+			this.words = words;
+			this.$input = this.$el.find('#word-search');
+			this.words = [];
+		},
 
-        render: function () {
-            this.$el.html(this.template(this.model.toJSON()));
-        },
+		render: function () {
+			this.$el.html(this.template(this.model.toJSON()));
+		},
 
-        parseWordsToTree: function() {
-            var root = new Node();
-            var word, node;
-            var i, j;
-            var words = this.words;
+		parseWordsToTree: function() {
+			var root = new Node();
+			var word, node;
+			var i, j;
+			var words = this.words;
 
-            // if (!this.words) {
-            //     words = this.words = this.dictionaryView.collections.pluck('name');
-            // }
-            
-            for (i = 0; i < words.length; i++) {
-                word = words[i].toLowerCase();
-                node = root;
-                for (j = 0; j < word.length; j++) {
-                    if (!node.next) {
-                        node.next = [];
-                    }
-                    // node.next[ word[j].charCodeAt() - 97 ] = new Node();
-                    node = node.setNextAtIndex( word[j].charCodeAt() - 97, i );
-                }
-                node.indexes.push(i);
-            }
-            
-            this.root = root;
-        },
+			// if (!this.words) {
+			//     words = this.words = this.dictionaryView.collections.pluck('name');
+			// }
 
-        getMatchedWords: function(substring) {
-            var i = 0;
-            var root = this.root;
-            var words = this.words;
+			for (i = 0; i < words.length; i++) {
+				word = words[i].toLowerCase();
+				node = root;
+				for (j = 0; j < word.length; j++) {
+					if (!node.next) {
+						node.next = [];
+					}
+					// node.next[ word[j].charCodeAt() - 97 ] = new Node();
+					node = node.setNextAtIndex( word[j].charCodeAt() - 97, i );
+				}
+				node.indexes.push(i);
+			}
 
-            if (typeof root === "undefined") {
-                this.parseWordsToTree();
-                root = this.root;
-            }
+			this.root = root;
+		},
 
-            var node = root;
-            var s = substring.toLowerCase();
-            
-            while (i < s.length && node) {
-                node = node.next ? node.next[ s[i].charCodeAt() - 97 ] : null;
-                i++;
-            }
-            
-            if (node) return node.indexes.map(function(index) {
-                return words[index];
-            });
-            return [];
-        },
+		getMatchedWords: function(substring) {
+			var i = 0;
+			var root = this.root;
+			var words = this.words;
 
-        addWord: function(word) {
-            this.words.push(word);
-            this.parseWordsToTree();
-        },
+			if (typeof root === "undefined") {
+				this.parseWordsToTree();
+				root = this.root;
+			}
 
-        removeWord: function(word) {
-            var words = this.words;
-            words.splice( words.indexOf(word), 1 );
-            this.parseWordsToTree();
-        },
+			var node = root;
+			var s = substring.toLowerCase();
 
-        // TODO: Use fuzzy search for better search results
-        filterWords: function(e) {
-            var searchKey = this.$input.val();
-            var words = this.getMatchedWords(searchKey);
-            app.dictionaryView.render(words);
-        }
+			while (i < s.length && node) {
+				node = node.next ? node.next[ s[i].charCodeAt() - 97 ] : null;
+				i++;
+			}
 
-    });
+			if (node) return node.indexes.map(function(index) {
+				return words[index];
+			});
+			return [];
+		},
 
-    
-    function Node() {
-        this.indexes = [];
-        this.next = null;
-    }
+		addWord: function(word) {
+			this.words.push(word);
+			this.parseWordsToTree();
+		},
 
-    Node.prototype.setNextAtIndex = function(i, id) {
-        this.indexes.push(id);
-        if ( !this.next ) {
-            this.next = [];
-        }
-        if ( !this.next[i] ) {
-            this.next[i] = new Node();
-        }
-        
-        return this.next[i];
-    };
+		removeWord: function(word) {
+			var words = this.words;
+			words.splice( words.indexOf(word), 1 );
+			this.parseWordsToTree();
+		},
 
-    return SearchView;
+		// TODO: Use fuzzy search for better search results
+		filterWords: function(e) {
+			var searchKey = this.$input.val();
+			var words = this.getMatchedWords(searchKey);
+			app.dictionaryView.render(words);
+		}
+
+	});
+
+
+	function Node() {
+		this.indexes = [];
+		this.next = null;
+	}
+
+	Node.prototype.setNextAtIndex = function(i, id) {
+		this.indexes.push(id);
+		if ( !this.next ) {
+			this.next = [];
+		}
+		if ( !this.next[i] ) {
+			this.next[i] = new Node();
+		}
+
+		return this.next[i];
+	};
+
+	return SearchView;
 });
