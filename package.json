@@ -35,7 +35,7 @@
     "grunt-express-server": "^0.4.17"
   },
   "engines": {
-    "node": ">=0.10.0"
+    "node": "=0.10.31"
   },
   "author": "Vishal Kumar",
   "repository": {
