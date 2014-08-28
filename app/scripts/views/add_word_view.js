@@ -23,6 +23,7 @@ define([
 			this.render();
 			this.$meaningList = this.$('#meaning-list');
 			this.$synonyms = this.$('#synonyms');
+			this.$wordInput = this.$('#name');
 		},
 
 		render: function() {
@@ -33,7 +34,7 @@ define([
 
 		checkAndFlip: function(e) {
 			var clickedElement = e.originalEvent.srcElement;
-			var $input = $('#name');
+			var $input = this.$wordInput;
 
 			if ( $input.val().trim() === '' || clickedElement === $input[0] ) { return; }
 
@@ -140,6 +141,13 @@ define([
 		createEmptyMeaningInput: function() {
 			var meaningView = this.createNewMeaningInput('');
 			meaningView.editMeaning();
+		},
+
+		setWord: function(word) {
+			if (!word) { return; }
+
+			word = word.trim();
+			this.$wordInput.val(word);
 		}
 	});
 

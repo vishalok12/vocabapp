@@ -91,7 +91,13 @@ define([
 		filterWords: function(e) {
 			var searchKey = this.$input.val();
 			var words = this.getMatchedWords(searchKey);
-			app.dictionaryView.render(words);
+
+			if (words.length) {
+				app.dictionaryView.render(words);
+			} else {
+				// show suggestion to add this search key as new word in list
+				app.dictionaryView.showAddWordMessage(searchKey);
+			}
 		}
 
 	});
