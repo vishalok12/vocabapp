@@ -11,7 +11,7 @@ define([
 			'name/:name': 'getWordByName',
 			'remembered': 'showRemembered',
 			'all': 'showAll',
-			'addword/:word': 'addWord',
+			'addword(/:word)': 'addWord',
 			'play/:name': 'playGame',
 			'*actions': 'showToRemember'
 		},
