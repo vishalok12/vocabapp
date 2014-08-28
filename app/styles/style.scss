@@ -436,9 +436,25 @@ ul {
 }
 
 #dictionary {
+	text-align: center;
+
 	&::after {
 		content: "";
 		display: table;
+	}
+
+	.add-word-suggestion {
+		display: inline-block;
+		margin: 20px auto;
+		padding: 10px;
+		background: rgb(64, 184, 126);
+		color: white;
+		cursor: pointer;
+
+		&:hover {
+			text-decoration: none;
+			background: #57F8AA;
+		}
 	}
 }
 
