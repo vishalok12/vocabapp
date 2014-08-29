@@ -5,6 +5,12 @@
 	outline: none;
 }
 
+html {
+	width: 100%;
+	margin: 0;
+	padding: 0;
+}
+
 body {
 	font-family: ubuntu;
 	margin: 0;
@@ -122,15 +128,13 @@ ul {
 		font-size: 15px;
 	}
 	.remove, .done-mark, .edit {
-		width: 30px;
-		height: 30px;
-		line-height: 30px;
+		width: 40px;
+		height: 40px;
+		line-height: 40px;
 		position: absolute;
 		top: 8px;
-		border-radius: 15px;
+		border-radius: 20px;
 		font-size: 20px;
-		// background: #79C76E;
-		// color: #84d379;
 		@include user-select(none);
 	}
 	.remove {
@@ -140,12 +144,12 @@ ul {
 		opacity: 0.7;
 	}
 	.done-mark {
-		right: 45px;
+		right: 57px;
 		border: 1px solid #66AF5C;
 		color: #66AF5C;
 	}
 	.edit {
-		right: 79px;
+		right: 99px;
 		// background: url('../images/edit.png') center no-repeat;
 		background: url('../images/edit-hover.png') center no-repeat;
 		background-size: 24px !important;
@@ -215,17 +219,17 @@ ul {
 	}
 
 	.close-btn {
-		width: 30px;
-		height: 30px;
-		line-height: 26px;
+		width: 40px;
+		height: 40px;
+		line-height: 35px;
 		position: absolute;
 		top: 40px;
 		right: 12px;
-		border-radius: 15px;
+		border-radius: 20px;
 		font-size: 20px;
 		-webkit-user-select: none;
-		border: 2px solid rgb(0, 149, 255);
-		color: rgb(0, 149, 255);
+		border: 2px solid #0095ff;
+		color: #0095ff;
 		cursor: pointer;
 
 		&:hover {
@@ -301,6 +305,7 @@ ul {
 		color: white;
 		text-align: left;
 		min-height: 1.8em;
+		cursor: pointer;
 	}
 
 	.edit-value {
@@ -406,6 +411,7 @@ ul {
 	.menu {
 		color: white;
 		background: #44BFE6;
+		border-bottom: 1px solid #399DBD;
 
 		&.active {
 			& > a {

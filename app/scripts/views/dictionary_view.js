@@ -92,8 +92,7 @@ define([
 		editWord: function(model) {
 			app.editWordView.render(model);
 			$('#edit-word').show();
-			window.scrollTo(0,0);
-			$('html').css('overflow', 'hidden');
+			// window.scrollTo(0,0);
 		},
 
 		showAddWordMessage: function(keyword) {

@@ -1,77 +1,85 @@
 define([
-    'jquery',
-    'backbone',
-    'views/add_word/meaning_view',
-    'templates'
+	'jquery',
+	'backbone',
+	'views/add_word/meaning_view',
+	'templates'
 ], function ($, Backbone, MeaningView, JST) {
-    'use strict';
+	'use strict';
 
-    var EditWordView = Backbone.View.extend({
-        el: '#edit-word',
+	var savedScrollY;
 
-        template: JST['app/scripts/templates/edit_word.ejs'],
+	var EditWordView = Backbone.View.extend({
+		el: '#edit-word',
 
-        events: {
-            'click .edit-btn': 'saveMeaning',
-            'click .close-btn': 'close'
-        },
+		template: JST['app/scripts/templates/edit_word.ejs'],
 
-        render: function(wordModel) {
-            this.meaningViews = [];
-            this.wordModel = wordModel;
+		events: {
+			'click .edit-btn': 'saveMeaning',
+			'click .close-btn': 'close'
+		},
 
-            var meanings = wordModel.get('meaning').split(';').filter(function(meaning) {
-                return meaning;
-            });
-            var meaningView;
+		render: function(wordModel) {
+			this.meaningViews = [];
+			this.wordModel = wordModel;
 
-            this.$el.html( this.template(wordModel.toJSON()) );
+			var meanings = wordModel.get('meaning').split(';').filter(function(meaning) {
+				return meaning;
+			});
+			var meaningView;
 
-            var i;
-            for (i = 0; i < meanings.length; i++) {
-                this.createNewMeaningInput(meanings[i]);
-            }
+			this.$el.html( this.template(wordModel.toJSON()) );
 
-            return this;
-        },
+			var i;
+			for (i = 0; i < meanings.length; i++) {
+				this.createNewMeaningInput(meanings[i]);
+			}
 
-        removeFromMeaningList: function(meaningView) {
-            this.meaningViews.splice(this.meaningViews.indexOf(meaningView), 1);
-        },
+			// save scroll value
+			savedScrollY = $(window).scrollTop();
 
-        createNewMeaningInput: function(meaning) {
-            meaning = meaning || '';
-            var meaningView = new MeaningView({meaning: meaning});
-            this.$('.edit-meaning').append(meaningView.el);
-            meaningView.on("destroy", this.removeFromMeaningList, this);
-            this.meaningViews.push(meaningView);
+			// disable parent view from scroll
+			$('html').css('position', 'fixed');
 
-            return meaningView;
-        },
+			return this;
+		},
 
-        createEmptyMeaningInput: function() {
-            var meaningView = this.createNewMeaningInput('');
-            meaningView.editMeaning();
-        },
+		removeFromMeaningList: function(meaningView) {
+			this.meaningViews.splice(this.meaningViews.indexOf(meaningView), 1);
+		},
 
-        saveMeaning: function() {
-            var newMeaning = '';
+		createNewMeaningInput: function(meaning) {
+			meaning = meaning || '';
+			var meaningView = new MeaningView({meaning: meaning});
+			this.$('.edit-meaning').append(meaningView.el);
+			meaningView.on("destroy", this.removeFromMeaningList, this);
+			this.meaningViews.push(meaningView);
 
-            for (var i = 0; i < this.meaningViews.length; i++) {
-                newMeaning += this.meaningViews[i].getValue() + ';';
-            }
+			return meaningView;
+		},
 
-            this.wordModel.set('meaning', newMeaning).save();
+		createEmptyMeaningInput: function() {
+			var meaningView = this.createNewMeaningInput('');
+			meaningView.editMeaning();
+		},
 
-            this.close();
-        },
+		saveMeaning: function() {
+			var newMeaning = '';
 
-        close: function() {
-            this.$el.hide();
-            
-            $('html').css('overflow', 'visible');            
-        }
-    });
+			for (var i = 0; i < this.meaningViews.length; i++) {
+				newMeaning += this.meaningViews[i].getValue() + ';';
+			}
 
-    return EditWordView;
+			this.wordModel.set('meaning', newMeaning).save();
+
+			this.close();
+		},
+
+		close: function() {
+			this.$el.hide();
+			$('html').css('position', 'static');
+			window.scrollTo(0, savedScrollY);
+		}
+	});
+
+	return EditWordView;
 });
