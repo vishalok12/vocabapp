@@ -64,6 +64,7 @@ define([
 				wordViews[i].afterAppend();
 			}
 
+			this.searchView.clear();
 			hideOtherContainers();
 
 			return this;

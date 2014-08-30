@@ -98,6 +98,10 @@ define([
 				// show suggestion to add this search key as new word in list
 				app.dictionaryView.showAddWordMessage(searchKey);
 			}
+		},
+
+		clear: function() {
+			this.$input.val('');
 		}
 
 	});
