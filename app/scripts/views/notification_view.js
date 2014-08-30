@@ -27,6 +27,7 @@ define([
             console.log('trigger undo');
             this.trigger('undo:delete');
             this.hide();
+            clearTimeout(this.hideTimeoutId);
         },
 
         display: function(text, period) {
