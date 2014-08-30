@@ -8,6 +8,15 @@ $granny-smith-apple: #8EEB99;
 $melrose: #ABBFFF;
 $dull-lavender: #9CAEE9;
 
+blurry {
+	-webkit-filter: blur(3px);
+	-moz-filter: blur(3px);
+	-o-filter: blur(3px);
+	-ms-filter: blur(3px);
+	filter: blur(3px);
+	// opacity: 0.4;
+}
+
 :focus {
 	outline: none;
 }
@@ -16,6 +25,15 @@ html {
 	width: 100%;
 	margin: 0;
 	padding: 0;
+
+	&.blurry {
+		#navigation {
+			@extend blurry;
+		}
+		#dictionary {
+			@extend blurry;
+		}
+	}
 }
 
 body {
@@ -554,7 +572,7 @@ ul {
 	top: 100px;
 	left: 0;
 	width: 100%;
-	background: #60afdf;
+	background: rgba(128, 128, 128, 0.8);
 	color: white;
 	height: 42px;
 	font-size: 18px;
@@ -568,16 +586,14 @@ ul {
 		position: absolute;
 		top: 3px;
 		right: 10px;
-		background: rgb(143, 207, 136);
-		border: none;
+		background: rgba(82, 82, 82, 0.8);
+		border: 1px solid rgb(82, 82, 82);
 		color: white;
 		padding: 5px;
-		box-shadow: 1px 1px 1px rgb(92, 92, 92);
 
 		&:active {
-			top: 4px;
-			right: 8px;
-			box-shadow: none;
+			background: white;
+			color: #5b5b5b;
 		}
 	}
 }

@@ -38,7 +38,9 @@ define([
 			savedScrollY = $(window).scrollTop();
 
 			// disable parent view from scroll
-			$('html').css('position', 'fixed');
+			$('html').css({
+				'position': 'fixed'
+			}).addClass('blurry');
 
 			return this;
 		},
@@ -76,7 +78,9 @@ define([
 
 		close: function() {
 			this.$el.hide();
-			$('html').css('position', 'static');
+			$('html').css({
+				'position': 'static'
+			}).removeClass('blurry');
 			window.scrollTo(0, savedScrollY);
 		}
 	});
