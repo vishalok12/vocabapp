@@ -633,13 +633,18 @@ ul {
 }
 
 @media (min-width: 768px) {
+	$cardMaxWidth: 750px;
 	#wrapper {
-		width: 750px;
+		width: $cardMaxWidth;
 
 		.word-card {
 			width: 240px;
 			margin: 5px;
 		}
+	}
+
+	#dictionary {
+		width: $cardMaxWidth;
 	}
 
 	#notification {
