@@ -46,7 +46,7 @@ app.configure( function() {
 		app.use(function(request, response) {
 			// check if request accepts html
 			if (request.accepts('html')) {
-				response.render(application_root + '/app/404.html');
+				response.send(404, application_root + '/app/404.html');
 				return;
 			}
 

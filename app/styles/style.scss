@@ -2,11 +2,13 @@
 @import "bootstrap-override";
 
 $scorpion: #5A5A5A;
-$scorpion-opaq: rgba(90, 90, 90, 0.7);
 $mint-green: #97F7A2;
 $granny-smith-apple: #8EEB99;
 $melrose: #ABBFFF;
 $dull-lavender: #9CAEE9;
+$azure-radiance: #0095FF;
+$fern: #66AF5C;
+$chestnut-rose: #CD5C5C;
 
 blurry {
 	-webkit-filter: blur(3px);
@@ -67,7 +69,7 @@ ul {
 	width: 214px;
 	height: 250px;
 	position: relative;
-	float: left;
+	display: inline-block;
 	margin: 10px;
 	text-align: center;
 	cursor: pointer;
@@ -111,7 +113,7 @@ ul {
 	.title {
 		font-size: 25px;
 		margin-bottom: 5px;
-		color: $scorpion-opaq;
+		color: rgba($scorpion, 0.7);
 		font-weight: bold;
 	}
 	.word, .title {
@@ -159,20 +161,19 @@ ul {
 	}
 	.remove {
 		right: 8px;
-		border: 1px solid #e04e4e;
-		color: #e04e4e;
-		opacity: 0.7;
+		border: 1px solid rgba($chestnut-rose, 0.8);
+		color: rgba($chestnut-rose, 0.8);
 	}
 	.done-mark {
 		right: 57px;
-		border: 1px solid #66AF5C;
-		color: #66AF5C;
+		border: 1px solid $fern;
+		color: $fern;
 	}
 	.edit {
-		right: 99px;
-		// background: url('../images/edit.png') center no-repeat;
-		background: url('../images/edit-hover.png') center no-repeat;
-		background-size: 24px !important;
+		right: 106px;
+		background: url("../images/edit-hover.png") center no-repeat;
+		background-size: 18px;
+		border: 1px solid black;
 	}
 }
 
@@ -217,7 +218,7 @@ ul {
 #edit-word {
 	display: block;
 	width: 100%;
-	height: 100%;
+	min-height: 100%;
 	text-align: center;
 	position: absolute;
 	left: 0;
@@ -248,13 +249,25 @@ ul {
 		border-radius: 20px;
 		font-size: 20px;
 		-webkit-user-select: none;
-		border: 2px solid #0095ff;
-		color: #0095ff;
+		border: 2px solid $azure-radiance;
+		color: $azure-radiance;
 		cursor: pointer;
 
 		&:hover {
-			color: rgb(90, 186, 255);
-			border: 2px solid rgb(90, 186, 255);
+			background: rgba($azure-radiance, 0.2);
+		}
+	}
+
+	.edit-btn {
+		background: transparent;
+		border: 1px solid $azure-radiance;
+		border-radius: 0;
+		margin: 0.8em;
+		font-size: 1.3em;
+		color: $scorpion;
+
+		&:hover {
+			background: rgba($azure-radiance, 0.2);
 		}
 	}
 
@@ -370,16 +383,21 @@ ul {
 }
 
 .hover {
-	.remove, .done-mark {
-		&:active {
-			box-shadow: none;
-			margin-top: 1px;
+	.remove {
+		&:hover {
+			background: rgba($chestnut-rose, 0.2);
 		}
 	}
-	.edit:active {
-		box-shadow: none;
-		margin-top: 1px;
-		margin-right: 1px;
+	.done-mark {
+		&:hover {
+			background: rgba($fern, 0.2);
+		}
+	}
+	.edit {
+		&:hover {
+			background: url("../images/edit-hover.png") center no-repeat, rgba(0, 0, 0, 0.2);
+			background-size: 18px;
+		}
 	}
 }
 
@@ -599,13 +617,18 @@ ul {
 }
 
 @media (min-width: 320px) {
+	$cardMaxWidth: 310px;
 	#wrapper {
-		width: 310px;
+		width: $cardMaxWidth;
 
 		.word-card {
 			width: 90%;
 			margin: 10px 5% 5px;
 		}
+	}
+
+	#dictionary {
+		width: $cardMaxWidth;
 	}
 }
 

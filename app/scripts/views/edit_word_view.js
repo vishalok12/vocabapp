@@ -38,9 +38,10 @@ define([
 			savedScrollY = $(window).scrollTop();
 
 			// disable parent view from scroll
-			$('html').css({
+			$('#dictionary').css({
 				'position': 'fixed'
-			}).addClass('blurry');
+			});
+			$('html').addClass('blurry');
 
 			return this;
 		},
@@ -78,9 +79,10 @@ define([
 
 		close: function() {
 			this.$el.hide();
-			$('html').css({
+			$('#dictionary').css({
 				'position': 'static'
-			}).removeClass('blurry');
+			});
+			$('html').removeClass('blurry');
 			window.scrollTo(0, savedScrollY);
 		}
 	});

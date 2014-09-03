@@ -15,3 +15,17 @@
 .no-padding {
     padding: 0 !important;
 }
+
+.btn {
+	border-radius: 0;
+	outline: none !important;
+
+	&:hover {
+		color: inherit;
+	}
+
+	&:active {
+		box-shadow: none;
+		-webkit-box-shadow: none;
+	}
+}
