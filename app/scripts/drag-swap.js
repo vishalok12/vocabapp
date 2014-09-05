@@ -4,12 +4,14 @@ define([
 	'use strict';
 
 	var IS_TOUCH_DEVICE = ('ontouchstart' in document.documentElement);
+	var DRAG_THRESHOLD = 5;
 	var dragging = false;
 	var $clone;
 	var dragElement;
 	var originalClientX, originalClientY;
 	var $elements;
 	var leftOffset, topOffset;
+	var touchDown = false;
 
 	var dragEvents = (function () {
 		if (IS_TOUCH_DEVICE) {
@@ -41,17 +43,11 @@ define([
 
 		function dragStartHandler(e) {
 			e.stopPropagation();
-			dragging = true;
+			touchDown = true;
+			// dragging = true;
+			originalClientX = e.clientX || e.originalEvent.touches[0].clientX;
+			originalClientY = e.clientY || e.originalEvent.touches[0].clientY;
 			dragElement = this;
-			$clone = clone($(this));
-			originalClientX = e.clientX;
-			originalClientY = e.clientY;
-
-			leftOffset = dragElement.offsetLeft;
-			topOffset = dragElement.offsetTop;
-
-			// hide dragged element
-			dragElement.style.opacity = 0;
 		}
 	};
 
@@ -73,32 +69,45 @@ define([
 	}
 
 	function dragMoveHandler(e) {
-		if (!dragging) { return; }
+		if (!touchDown) { return; }
 
-		e.stopPropagation();
+		var dragDistanceX = (e.clientX  || e.originalEvent.touches[0].clientX) - originalClientX;
+		var dragDistanceY = (e.clientY || e.originalEvent.touches[0].clientY) - originalClientY;
 
-		$clone.css({
-			left: leftOffset + e.clientX - originalClientX,
-			top: topOffset + e.clientY - originalClientY
-		});
+		if (dragging) {
+			e.stopPropagation();
 
-		// var hoveredElement = getHoveredElement($clone, $elements);
-		// if (hoveredElement && currentHoveredElement && hoveredElement !== currentHoveredElement) {
-		// 	shiftElements(dragElement, hoveredElement);
-		// }
+			$clone.css({
+				left: leftOffset + dragDistanceX,
+				top: topOffset + dragDistanceY
+			});
 
-		shiftHoveredElement($clone, $(dragElement), $elements);
+			shiftHoveredElement($clone, $(dragElement), $elements);
 
-		// currentHoveredElement = hoveredElement;
-		// currentHoveredElement && console.log(currentHoveredElement);
+		// check for drag threshold
+		} else if (Math.abs(dragDistanceX) > DRAG_THRESHOLD ||
+				Math.abs(dragDistanceY) > DRAG_THRESHOLD) {
+			$clone = clone($(dragElement));
+
+			leftOffset = dragElement.offsetLeft;
+			topOffset = dragElement.offsetTop;
+
+			// hide dragged element
+			dragElement.style.opacity = 0;
+
+			dragging = true;
+		}
 	}
 
-	function dragEndHandler() {
+	function dragEndHandler(e) {
 		if (dragging) {
+			e.stopPropagation();
 			dragging = false;
 			$clone.remove();
 			dragElement.style.opacity = 1;
 		}
+
+		touchDown = false;
 	}
 
 	/**
@@ -119,8 +128,6 @@ define([
 
 			var overlappingY = (offset.top < dragElementOffset.top + elemHeight) &&
 				(offset.top + elemHeight > dragElementOffset.top);
-
-			// console.log('values: ', overlappingX, overlappingY);
 
 			var inRange = overlappingX && overlappingY;
 
