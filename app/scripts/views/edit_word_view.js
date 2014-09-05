@@ -2,7 +2,8 @@ define([
 	'jquery',
 	'backbone',
 	'views/add_word/meaning_view',
-	'templates'
+	'templates',
+	'drag-swap'
 ], function ($, Backbone, MeaningView, JST) {
 	'use strict';
 
@@ -43,6 +44,10 @@ define([
 			});
 			$('html').addClass('blurry');
 
+			// TODO: should not use the child element here
+			// make all the meanings draggable to change the order
+			$('.word-meaning').swappable();
+
 			return this;
 		},
 
@@ -68,8 +73,11 @@ define([
 		saveMeaning: function() {
 			var newMeaning = '';
 
-			for (var i = 0; i < this.meaningViews.length; i++) {
-				newMeaning += this.meaningViews[i].getValue() + ';';
+			// TODO: get meaning from meaning view
+			// currently sorting changes order of meaning view
+			var $meanings = $('.word-meaning');
+			for (var i = 0; i < $meanings.length; i++) {
+				newMeaning += $meanings.eq(i).find('.stored-value').text() + ';';
 			}
 
 			this.wordModel.set('meaning', newMeaning).save();
