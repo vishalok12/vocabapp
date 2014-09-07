@@ -114,31 +114,40 @@ define([
 	 * find the element on which the dragged element is hovering
 	 * @return {DOM Object} hovered element
 	 */
-	function getHoveredElement($dragElement, $swappableElements) {
-		var dragElementOffset = $dragElement.offset();
-		var elemWidth = $dragElement.width();
-		var elemHeight = $dragElement.height();
+	function getHoveredElement($clone, $dragElement, $swappableElements) {
+		var cloneOffset = $clone.offset();
+		var elemWidth = $clone.width();
+		var elemHeight = $clone.height();
+		var cloneLeftPosition = cloneOffset.left;
+		var cloneRightPosition = cloneOffset.left + elemWidth;
+		var cloneTopPosition = cloneOffset.top;
+		var cloneBottomPosition = cloneOffset.top + elemHeight;
+		var $currentElement;
 
 		for (var i = 0; i < $swappableElements.length; i++) {
-			var offset = $swappableElements.eq(i).offset();
+			$currentElement = $swappableElements.eq(i);
+
+			if ($currentElement[0] === $dragElement[0]) { continue; }
+
+			var offset = $currentElement.offset();
 
 			// check if this element position is overlapping with dragged element
-			var overlappingX = (offset.left < dragElementOffset.left + elemWidth) &&
-				(offset.left + elemWidth > dragElementOffset.left);
+			var overlappingX = (offset.left + 0.5 * elemWidth < cloneRightPosition) &&
+				(offset.left + 0.5 * elemWidth > cloneLeftPosition);
 
-			var overlappingY = (offset.top < dragElementOffset.top + elemHeight) &&
-				(offset.top + elemHeight > dragElementOffset.top);
+			var overlappingY = (offset.top + 0.5 * elemHeight < cloneBottomPosition) &&
+				(offset.top + 0.5 * elemHeight > cloneTopPosition);
 
 			var inRange = overlappingX && overlappingY;
 
 			if (inRange) {
-				return $swappableElements.eq(i)[0];
+				return $currentElement[0];
 			}
 		}
 	}
 
 	function shiftHoveredElement($clone, $dragElement, $swappableElements) {
-		var hoveredElement = getHoveredElement($clone, $swappableElements);
+		var hoveredElement = getHoveredElement($clone, $dragElement, $swappableElements);
 
 		if (hoveredElement !== $dragElement[0]) {
 			// shift all other elements to make space for the dragged element
@@ -149,11 +158,17 @@ define([
 			} else {
 				$(hoveredElement).after($dragElement);
 			}
-		}
 
+			shiftElementPosition($swappableElements, dragElementIndex, hoveredElementIndex);
+		}
 	}
 
 	// initialize
 	init();
+
+	function shiftElementPosition(arr, fromIndex, toIndex) {
+		var temp = arr.splice(fromIndex, 1)[0];
+		return arr.splice(toIndex, 0, temp);
+	}
 
 });
