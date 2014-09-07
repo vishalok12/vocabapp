@@ -401,22 +401,21 @@ ul {
 	}
 }
 
+.search-container {
+	@extend .no-padding;
+}
+
 #nav-search {
-	margin: 3px;
-	background: #FFF;
-	border: solid #FFF;
-	border-width: 2px 5px;
-	border-radius: 4px;
 	width: 100%;
-	float: right;
+	margin-top: 7px;
 }
 
 #word-search {
 	width: 100%;
 	padding: 6px 10px 6px 36px;
-	border: 1px solid rgb(0, 211, 51);
 	font-size: 18px;
-	background: url('../images/search.png') no-repeat;
+	border: 0;
+	background: url('../images/search.png') no-repeat, white;
 	background-size: 30px;
 	background-position: 0px 7px;
 
