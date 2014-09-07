@@ -230,7 +230,7 @@ ul {
 		position: relative;
 		max-width: 500px;
 		margin: 0 auto;
-		padding: 120px 25px 25px;
+		padding: 100px 12px 25px;
 	}
 
 	.word-name {
@@ -320,7 +320,7 @@ ul {
 
 .word-meaning {
 	position: relative;
-	margin: 3px 0;
+	margin: 3px 27px 3px 0px;
 
 	&.editing {
 		.edit-value {
@@ -347,7 +347,7 @@ ul {
 	}
 
 	.stored-value, .edit-value {
-		padding: 4px;
+		padding: 10px 6px;
 		color: $scorpion;
 		font-size: 1.2em;
 	}
@@ -355,7 +355,7 @@ ul {
 	.trash-icon {
 		position: absolute;
 		top: 10px;
-		right: -16px;
+		right: -27px;
 		cursor: pointer;
 	}
 }
