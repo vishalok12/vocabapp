@@ -7,3 +7,5 @@ test/bower_components/
 .yo-rc.json
 *~
 *.sublime-*
+newrelic.js
+newrelic_agent.log

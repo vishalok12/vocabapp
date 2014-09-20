@@ -1,4 +1,6 @@
 // Module dependencies.
+require('newrelic');
+
 var application_root = __dirname,
 	express = require( 'express' ), //Web framework
 	path = require( 'path' ), //Utilities for dealing with file paths
