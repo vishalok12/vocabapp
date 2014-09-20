@@ -153,7 +153,7 @@ define([
 
 	function getMeaning(phrase, callback) {
 		$.ajax({
-			url: "/api/meaning",
+			url: "http://www.wordtray.com" + "/api/meaning",
 			data: {
 				phrase: phrase
 			},

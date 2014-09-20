@@ -42,7 +42,11 @@ define([
 		this.on(dragEvents.START, dragStartHandler);
 
 		function dragStartHandler(e) {
+			if ($(this).hasClass('ds-no-drag')) { return; }
+
 			e.stopPropagation();
+			e.preventDefault();
+
 			touchDown = true;
 			// dragging = true;
 			originalClientX = e.clientX || e.originalEvent.touches[0].clientX;
@@ -105,6 +109,10 @@ define([
 			dragging = false;
 			$clone.remove();
 			dragElement.style.opacity = 1;
+		} else if (touchDown) {
+			// fire click event as user didn't drag
+			// click event by default won't work as there is e.preventDefault in dragstart
+			$(e.target).trigger('click');
 		}
 
 		touchDown = false;

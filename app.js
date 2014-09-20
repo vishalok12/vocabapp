@@ -5,7 +5,8 @@ var application_root = __dirname,
 	mongoose = require( 'mongoose' ), //MongoDB integration
 	dispatcher = require('./server/lib/dispatcher.js'), //require custom dispatcher
 	http = require('http'),
-	qs = require('querystring');
+	qs = require('querystring'),
+	cors = require('cors');
 
 //Create server
 var app = express();
@@ -22,6 +23,8 @@ app.configure( function() {
 	app.use( express.cookieParser() );
 
 	app.use(express.session({secret: '1234567890QWERTY'}));
+
+	app.use(cors());
 
 	//perform route lookup based on url and HTTP method
 	app.use( app.router );
