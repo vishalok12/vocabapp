@@ -25,6 +25,7 @@ blurry {
 
 html {
 	width: 100%;
+	height: 100%;
 	margin: 0;
 	padding: 0;
 
@@ -39,6 +40,8 @@ html {
 }
 
 body {
+	width: 100%;
+	height: 100%;
 	font-family: ubuntu;
 	margin: 0;
 	-webkit-user-select: none;
@@ -58,7 +61,8 @@ ul {
 }
 
 #wrapper {
-	margin: 100px auto 20px;
+	margin: 0 auto;
+	padding: 100px 0 20px;
 
 	& > section {
 		display: none;
@@ -507,7 +511,7 @@ ul {
 }
 
 #game-wrapper {
-	height: 600px;
+	height: 100%;
 	background: #C8DDE4;
 	padding-top: 98px;
 }
@@ -523,6 +527,11 @@ ul {
 		width: 100%;
 		overflow: hidden;
 		padding-top: 50px;
+		text-align: center;
+	}
+
+	.edit, .done-mark, .remove {
+		display: none;
 	}
 
 	.word-card {

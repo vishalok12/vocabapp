@@ -58,7 +58,8 @@ define([
 
 		playGame: function(name) {
 			new app.GameView({
-				type: name
+				type: name,
+				el: '#game-wrapper'
 			});
 		},
 

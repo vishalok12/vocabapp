@@ -1,129 +1,134 @@
 define([
-    'jquery',
-    'backbone',
-    'collections/dictionary',
-    'views/word_view',
-    'templates'
+	'jquery',
+	'backbone',
+	'collections/dictionary',
+	'views/word_view',
+	'templates'
 ], function ($, Backbone, DictionaryCollection, WordView, JST) {
-    'use strict';
+	'use strict';
 
-    var GameView = Backbone.View.extend({
-        el: '#game-wrapper',
+	var GameView = Backbone.View.extend({
+		template: JST['app/scripts/templates/loop_game.ejs'],
 
-        events: {
-            'click #lg-remembered': "markWordRemembered",
-            'click #lg-not-remembered': "markWordNotRemembered",
-            'click #lg-next': "showNextWord"
-        },
+		events: {
+			'click #lg-remembered': "markWordRemembered",
+			'click #lg-not-remembered': "markWordNotRemembered",
+			'click #lg-next': "showNextWord"
+		},
 
-        initialize: function(options) {
-            this.collections = new DictionaryCollection();
-            // this.collections.on('reset', this.render());
-            var that = this;
-            app.wordType = 'unremembered';
-            this.collections.fetch({
-                success: function() {
-                    that.wordPool = that.collections.models.filter(function(model) {
-                        return !model.get('remembered');
-                    });
-                    that.acceptAnswer(true);        // true when user can able to answer remembered/not remembered
-                    that.nextWordPool = [];
-                    if (!that.wordPool.length) {
-                        alert('There must be a word to start game!!');
-                    } else {
-                        that.render();
-                    }
-                }
-            });
-            this.$loopGame = this.$el.find('.loop-game');
-            this.currentIndex = 0;
-            this.$wordContainer = this.$el.find('.word-container');
-            this.$gameButtons = this.$el.find('.game-option');
-            this.$nextButton = this.$el.find('#lg-next');
-	    this.$overlay = this.$('.overlay');
+		initialize: function(options) {
+			this.collections = new DictionaryCollection();
+			var that = this;
+			app.wordType = 'unremembered';
+			this.collections.fetch({
+				success: function() {
+					that.wordPool = that.collections.models.filter(function(model) {
+						return !model.get('remembered');
+					});
+					that.acceptAnswer(true);        // true when user can able to answer remembered/not remembered
+					that.nextWordPool = [];
+					if (!that.wordPool.length) {
+						alert('There must be a word to start game!!');
+					} else {
+						that.renderWord();
+					}
+				}
+			});
+			this.render();
+			this.$loopGame = this.$el.find('.loop-game');
+			this.currentIndex = 0;
+			this.$wordContainer = this.$el.find('.word-container');
+			this.$gameButtons = this.$el.find('.game-option');
+			this.$nextButton = this.$el.find('#lg-next');
+			this.$overlay = this.$('.overlay');
 
-            hideOtherContainers();
-        },
+			hideOtherContainers();
+		},
 
-        render: function() {
-            var currentWord = this.wordPool[this.currentIndex];
-            if (this.wordView) {
-                this.wordView.close();
-            }
-            this.wordView = new WordView( {model: currentWord} );
+		render: function() {
+			this.$el.html( this.template() );
+		},
 
-            this.$wordContainer.html( this.wordView.render().$el );
+		renderWord: function() {
+			var currentWord = this.wordPool[this.currentIndex];
+			if (this.wordView) {
+				this.wordView.close();
+			}
+			this.wordView = new WordView( {model: currentWord} );
 
-            this.acceptAnswer(true);
+			this.$wordContainer.html( this.wordView.render().$el );
 
-            return this;
-        },
+			this.wordView.afterAppend();
 
-        /**
-         * removes the word from the loop-game
-         */
-        markWordRemembered: function() {
-            if (!this.acceptAnswer()) { return; }
-            this.acceptAnswer(false);
+			this.acceptAnswer(true);
 
-            this.wordPool.shift();
-            checkWordPool(this);
-            this.showNextWord();
-        },
+			return this;
+		},
 
-        /**
-         * move this word for the next loop
-         */
-        markWordNotRemembered: function() {
-            if (!this.acceptAnswer()) { return; }
-            this.acceptAnswer(false);
+		/**
+		 * removes the word from the loop-game
+		 */
+		markWordRemembered: function() {
+			if (!this.acceptAnswer()) { return; }
+			this.acceptAnswer(false);
 
-            this.nextWordPool.push(this.wordPool.shift());
-            checkWordPool(this);
-            this.wordView.flip();
-	    this.$overlay.addClass('hide');
-        },
+			this.wordPool.shift();
+			checkWordPool(this);
+			this.showNextWord();
+		},
 
-        /**
-         *
-         */
-        showNextWord: function() {
-            if (this.wordPool.length) {
-                this.render();
-            }
+		/**
+		 * move this word for the next loop
+		 */
+		markWordNotRemembered: function() {
+			if (!this.acceptAnswer()) { return; }
+			this.acceptAnswer(false);
 
-            this.$overlay.removeClass('hide');
-        },
+			this.nextWordPool.push(this.wordPool.shift());
+			checkWordPool(this);
+			this.wordView.flip();
+			this.$overlay.addClass('hide');
+		},
 
-        acceptAnswer: function(canAnswer) {
-            if (canAnswer !== undefined) {
-                this.canAnswer = canAnswer;
-                this.$gameButtons.toggleClass('active', canAnswer);
-                this.$nextButton.toggleClass('active', !canAnswer);
-            } else {
-                return this.canAnswer;
-            }
-        }
+		/**
+		 *
+		 */
+		showNextWord: function() {
+			if (!this.$nextButton.hasClass('active') || !this.wordPool.length) { return; }
 
-    });
+			this.renderWord();
+			this.$overlay.removeClass('hide');
+		},
 
-    function checkWordPool(self) {
-        if (!self.wordPool.length) {
-            if (self.nextWordPool.length) {
-                self.wordPool = self.nextWordPool;
-                self.nextWordPool = [];
-            } else {
-                // Game finished
-                alert('game finished');
-            }
-        }
-    }
+		acceptAnswer: function(canAnswer) {
+			if (canAnswer !== undefined) {
+				this.canAnswer = canAnswer;
+				this.$gameButtons.toggleClass('active', canAnswer);
+				this.$nextButton.toggleClass('active', !canAnswer);
+			} else {
+				return this.canAnswer;
+			}
+		}
 
-    function hideOtherContainers() {
-        $('#wrapper').hide();
-        $('#game-wrapper').show();
-        app.navBarView.hideSearchBar();
-    }
+	});
 
-    return GameView;
+	function checkWordPool(self) {
+		if (!self.wordPool.length) {
+			if (self.nextWordPool.length) {
+				self.wordPool = self.nextWordPool;
+				self.nextWordPool = [];
+			} else {
+				// Game finished
+				alert('game finished');
+			}
+		}
+	}
+
+	function hideOtherContainers() {
+		$('#wrapper').hide();
+		$('#game-wrapper').show();
+		app.navBarView.hideSearchBar();
+	}
+
+	return GameView;
 });
