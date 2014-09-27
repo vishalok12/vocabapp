@@ -136,6 +136,10 @@ app.all('/api/*', function(request, response, next) {
 });
 
 app.get('/login', function(request, response) {
+	if (request.isAuthenticated()) {
+		return response.redirect('/');
+	}
+
 	response.render(application_root + '/' + appDirectory + '/signin.html');
 });
 
