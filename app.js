@@ -2,12 +2,14 @@
 require('newrelic');
 
 var application_root = __dirname,
+	appDirectory = process.env.NODE_ENV === 'production' ? 'dist' : 'app',
 	express = require( 'express' ), //Web framework
 	path = require( 'path' ), //Utilities for dealing with file paths
 	mongoose = require( 'mongoose' ), //MongoDB integration
-	dispatcher = require('./server/lib/dispatcher.js'), //require custom dispatcher
 	http = require('http'),
-	qs = require('querystring');
+	qs = require('querystring'),
+	passport = require('passport'),
+	LocalStrategy = require('passport-local').Strategy;
 
 //Create server
 var app = express();
@@ -23,7 +25,9 @@ app.configure( function() {
 
 	app.use( express.cookieParser() );
 
-	app.use(express.session({secret: '1234567890QWERTY'}));
+	app.use(express.session({secret: process.env.SESSION_SECRET || '1234567890QWERTY'}));
+	app.use(passport.initialize());
+	app.use(passport.session());
 
 	//perform route lookup based on url and HTTP method
 	app.use( app.router );
@@ -32,18 +36,20 @@ app.configure( function() {
 	app.engine('html', require('ejs').renderFile);
 
 	if(app.get('env') == "development") {
-		app.use( express.static( path.join( application_root, '.tmp') ) );
-
 		if (unittest) {
 			app.use( express.static( path.join( application_root, 'test') ) );
 		}
+
+		app.use( express.static( path.join( application_root, '.tmp') ) );
+		app.use( express.static( path.join( application_root, 'app') ) );
 	}
 
+	if (app.get('env') == "production") {
+		//Where to serve static content
+		app.use( express.static( path.join( application_root, 'dist') ) );
+	}
 
 	if (app.get('env') == "development") {
-		//Where to serve static content
-		app.use( express.static( path.join( application_root, 'app') ) );
-
 		// for 404 errors
 		app.use(function(request, response) {
 			// check if request accepts html
@@ -68,9 +74,6 @@ app.configure( function() {
 	}
 
 	if (app.get('env') == "production") {
-		//Where to serve static content
-		app.use( express.static( path.join( application_root, 'dist') ) );
-
 		app.use(function(request, response) {
 			response.render(application_root + '/dist/404.html');
 		});
@@ -79,125 +82,120 @@ app.configure( function() {
 	}
 });
 
+passport.serializeUser(function(user, done) {
+	done(null, user._id);
+});
+
+passport.deserializeUser(function(id, done) {
+	UserModel.findOne( {_id: id}, function(err, user) {
+		done(err, user);
+	});
+});
+
+passport.use(new LocalStrategy(
+	function(username, password, done) {
+		console.log('username', username);
+		console.log('password', password);
+
+		if (!username || !password) {
+			return done(null, false, { message: 'username and Password are compulsory' });
+		}
+
+		username = username.trim();
+		password = password.trim();
+
+		UserModel.findOne( {email: username}, function(err, user) {
+			if (!err) {
+				if (user && user.password === password) {
+					return done(null, user);
+				} else {
+					return done(err, false, { message: 'Invalid password' });
+				}
+			} else {
+				return done(null, false, { message: 'Unknown user ' + username });
+			}
+		});
+	}
+));
+
 // Routes
-app.get( '/', function( request, response ) {
+app.get('/', function( request, response ) {
+	var fileName = request.isAuthenticated() ? 'index.html' : 'homepage.html';
+
 	//dispatch our request
-	dispatcher.dispatch(request, response);
+	response.render(application_root + '/' + appDirectory + '/' + fileName);
+	}
+);
+
+app.all('/api/*', function(request, response, next) {
+	if (request.isAuthenticated()) {
+		next();
+	} else {
+		response.send(401, 'Unauthorized');
+	}
 });
 
 app.get('/login', function(request, response) {
-	var dir;
-	if (process.env.NODE_ENV === 'production') {
-		dir = 'dist';
-	} else {
-		dir = 'app';
-	}
-
-	response.render(application_root + '/' + dir + '/signin.html');
+	response.render(application_root + '/' + appDirectory + '/signin.html');
 });
 
 app.get('/logout', function(request, response) {
-	response.cookie('userid', null, { maxAge: -1 });
-
+	request.logout();
 	response.redirect('/');
 });
 
 // signup
-app.post('/signup', function(request, response) {
-	request.session.userId = '';
-	var user = new UserModel({
-		first_name: request.body.firstName,
-		last_name: request.body.lastName,
-		email: request.body.email,
-		password: request.body.password
-	});
-	user.save( function( err, user ) {
-		if( !err ) {
-			response.cookie('userid', user._id, { maxAge: 5 * 24 * 60 * 60 * 1000 });
-			request.session.userId = user._id;
-			response.redirect('/');
+app.post('/signup', function(request, response, next) {
+	var email = request.body.email.trim();
+	var password = request.body.password;
+	var firstName = request.body.firstName.trim();
+	var lastName = request.body.lastName.trim();
 
-			// create a sample word
-			var word = new WordModel({
-				name: 'Sample',
-				meaning: 'A sample word meaning!!;' +
-					'Add new words in your list;' +
-					'On Navigation Bar, Click "Add Word" to insert a new word',
-				remembered: false,
-				userId: user._id,
-				synonyms: ''
+	// check if user already exists
+	UserModel.findOne( {email: email}, function(err, oldUser) {
+		if (err) {
+			next(err);
+		} else {
+			if (oldUser) {
+				// user already exist!!
+
+				console.log('User email already exists!!');
+				return response.redirect('/');
+			}
+
+			var user = new UserModel({
+				first_name: firstName,
+				last_name: lastName,
+				email: email,
+				password: password
 			});
-			word.save( function( error ) {
-				if( !error ) {
-					return console.log( 'created a sample word!!!' );
+
+			user.save(function( err, user ) {
+				if( !err ) {
+					console.log('New User ', email, ' has been created!');
+					request.login(user, function(error) {
+						if (error) { return next(error); }
+
+						afterSignup(user._id);
+
+						return response.redirect('/');
+					});
+
 				} else {
-					return console.log( error );
+					next(err);
 				}
 			});
-
-			return console.log( 'created' );
-		} else {
-			return console.log( err );
 		}
 	});
 });
 
 // signin
-app.post('/session', function(request, response) {
-	var email = request.body.userName;
-	var password = request.body.password;
-	console.log('email: ' + email);
-	console.log('password: ' + password);
-
-	if (!email || !password) {
-		console.log('some values not filled!!');
-		response.redirect('/');
-	} else {
-		email = email.trim();
-		password = password.trim();
-	}
-
-	UserModel.findOne( {email: email}, function(err, userDetails) {
-		console.log(err);
-		console.log(userDetails);
-		if( !err ) {
-			if (userDetails && userDetails.password === password) {
-				console.log('matched');
-				response.cookie('userid', userDetails._id, { maxAge: 5 * 24 * 60 * 60 * 1000 });
-				request.session.userId = userDetails._id;
-				response.redirect('/');
-			} else {
-				console.log('unmatched');
-
-				response.redirect('/');
-			}
-		} else {
-			return console.log( err );
-		}
-	});
-});
-
-// api signin
-app.post('/api/session', function(request, response) {
-	var email = request.body.userName;
-	var password = request.body.password;
-
-	UserModel.findOne( {email: email}, function(err, userDetails) {
-		console.log(userDetails);
-		if( !err ) {
-			if (userDetails.password === password) {
-				response.set({'Content-Type': 'application/json'});
-				// response.send(callback + "({userId: \"" + userDetails._id + "\"})");
-				response.send({userId: userDetails._id});
-			} else {
-				console.log('unmatched');
-				response.status(404).send({error: 'not found'});
-			}
-		} else {
-			return console.log( err );
-		}
-	});
-});
+app.post('/session',
+	passport.authenticate('local', {
+		successRedirect: '/',
+		failureRedirect: '/login'
+	})
+);
 
 //Connect to database
 var mongoUri = process.env.MONGOLAB_URI ||
@@ -226,49 +224,42 @@ var WordModel = mongoose.model( 'Word', Word );
 var UserModel = mongoose.model( 'User', User );
 
 //Get a list of all words
-app.get( '/api/words', function( request, response ) {
-	console.log('session: ' + JSON.stringify(request.session));
-	console.log('sessionId: ' + request.session.userId);
+app.get('/api/words', function( request, response ) {
 	var userId;
 
-	if (request.session && request.session.userId) {
-		userId = request.session.userId;
-	} else if (request.query.userId) {
-		userId = request.query.userId;
-	} else {
-		console.log("user id is missing!");
-	}
+	userId = request.user._id;
 
-	return WordModel.find( { 'userId': request.session.userId }, 'name meaning synonyms remembered', function( err, words ) {
+	return WordModel.find({ 'userId': userId },
+			'name meaning synonyms remembered', function( err, words, next ) {
 		if( !err ) {
 			return response.send( words );
 		} else {
-			return console.log( err );
+			return next( err );
 		}
 	});
 });
 
 //Insert a new word
-app.post( '/api/words', function( request, response ) {
+app.post('/api/words', function( request, response, next ) {
 	var word = new WordModel({
 		name: request.body.name,
 		meaning: request.body.meaning,
 		remembered: request.body.remembered,
-		userId: request.session.userId,
+		userId: request.user._id,
 		synonyms: request.body.synonyms.toString()
 	});
 	word.save( function( err ) {
 		if( !err ) {
 			return console.log( 'created' );
 		} else {
-			return console.log( err );
+			return next( err );
 		}
 	});
 	return response.send( word );
 });
 
 //Update a word
-app.put( '/api/words/:id', function( request, response ) {
+app.put('/api/words/:id', function( request, response, next ) {
 	console.log( 'Updating word ' + request.body.name );
 	return WordModel.findById( request.params.id, function( err, word ) {
 		word.name = request.body.name;
@@ -279,7 +270,7 @@ app.put( '/api/words/:id', function( request, response ) {
 			if( !err ) {
 				console.log( 'word updated' );
 			} else {
-				console.log( err );
+				next( err );
 			}
 			return response.send( word );
 		});
@@ -287,7 +278,7 @@ app.put( '/api/words/:id', function( request, response ) {
 });
 
 //Delete a word
-app.delete( '/api/words/:id', function( request, response ) {
+app.delete('/api/words/:id', function( request, response, next ) {
 	console.log( 'Deleting word with id: ' + request.params.id );
 	return WordModel.findById( request.params.id, function( err, word ) {
 		return word.remove( function( err ) {
@@ -295,7 +286,7 @@ app.delete( '/api/words/:id', function( request, response ) {
 				console.log( 'word removed' );
 				return response.send( '' );
 			} else {
-				console.log( err );
+				next( err );
 			}
 		});
 	});
@@ -323,15 +314,25 @@ app.get('/api/meaning', function(request, response, next) {
 			}
 		}
 	);
-
-	// req.on('error', function(e) {
-	//   console.log('problem with request: ' + e.message);
-	// });
-
-	// // write data to request body
-	// req.write(data);
-	// req.end();
 });
+
+function afterSignup(userId) {
+	// create a sample word
+	var word = new WordModel({
+		name: 'Sample',
+		meaning: 'A sample word meaning!!;' +
+			'Add new words in your list;' +
+			'On Navigation Bar, Click "Add Word" to insert a new word',
+		remembered: false,
+		userId: userId,
+		synonyms: ''
+	});
+	word.save( function( error ) {
+		if( error ) {
+			console.log( 'Error occurred in creating sample word' );
+		}
+	});
+}
 
 //Start server
 var port = process.env.PORT || 9000;
