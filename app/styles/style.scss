@@ -91,7 +91,7 @@ ul {
 		left: 0;
 		border-radius: 5px;
 		@include backface-visibility(hidden);
-		@include transition-prefixed (transform, 600ms, ease-in-out);
+		@include transition-prefixed (transform, 400ms, ease-in-out);
 	}
 	.front-face {
 		background: $mint-green;
