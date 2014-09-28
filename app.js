@@ -9,7 +9,8 @@ var application_root = __dirname,
 	http = require('http'),
 	qs = require('querystring'),
 	passport = require('passport'),
-	LocalStrategy = require('passport-local').Strategy;
+	LocalStrategy = require('passport-local').Strategy,
+	morgan = require('morgan');
 
 //Create server
 var app = express();
@@ -17,6 +18,7 @@ var unittest = process.argv.indexOf("--unittest") > -1;
 
 // Configure server
 app.configure( function() {
+	app.use(morgan('common'));
 	//parses request body and populates request.body
 	app.use( express.bodyParser() );
 
