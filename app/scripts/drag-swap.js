@@ -35,20 +35,33 @@ define([
 			.on(dragEvents.END, dragEndHandler);
 	}
 
-	$.fn.swappable = function() {
+	$.fn.swappable = function(options) {
+		options = $.extend({}, options);
+
 		$elements = this;
 
-		// bindings to trigger drag on element
-		this.on(dragEvents.START, dragStartHandler);
+		this.each(function() {
+			// bindings to trigger drag on element
+			var dragSelector = options.dragSelector;
+			var self = this;
+			var $this = $(this);
 
-		function dragStartHandler(e) {
-			e.stopPropagation();
-			touchDown = true;
-			// dragging = true;
-			originalClientX = e.clientX || e.originalEvent.touches[0].clientX;
-			originalClientY = e.clientY || e.originalEvent.touches[0].clientY;
-			dragElement = this;
-		}
+			if (dragSelector) {
+				$this.on(dragEvents.START, dragSelector, dragStartHandler);
+			} else {
+				$this.on(dragEvents.START, dragStartHandler);
+			}
+
+			function dragStartHandler(e) {
+				e.stopPropagation();
+				touchDown = true;
+				// dragging = true;
+				originalClientX = e.clientX || e.originalEvent.touches[0].clientX;
+				originalClientY = e.clientY || e.originalEvent.touches[0].clientY;
+				dragElement = self;
+			}
+		});
+
 	};
 
 	function clone($element) {

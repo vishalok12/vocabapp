@@ -46,7 +46,9 @@ define([
 
 			// TODO: should not use the child element here
 			// make all the meanings draggable to change the order
-			$('.word-meaning').swappable();
+			$('.word-meaning').swappable({
+				dragSelector: '.drag-icon'
+			});
 
 			return this;
 		},
