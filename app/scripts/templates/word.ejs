@@ -1,22 +1,24 @@
 <div class="front-face">
-      <div class="word <%= name.length < 14 ? '': name.length < 18 ? 'large': 'very-large' %>">
-            <label><%= name.slice(0,1).toUpperCase() + name.slice(1) %></label>
-      </div>
-      <div class="edit" title="Edit"></div>
-      <div class="done-mark" title="Mark done">✓</div>
-      <div class="remove" title="Delete word">✖</div>
+	<div class="word <%= name.length < 14 ? '': name.length < 18 ? 'large': 'very-large' %>">
+		<label><%= name.slice(0,1).toUpperCase() + name.slice(1) %></label>
+		<i class="fa fa-volume-up volume-icon"></i>
+	</div>
+	<div class="edit" title="Edit"></div>
+	<div class="done-mark" title="Mark done">✓</div>
+	<div class="remove" title="Delete word">✖</div>
+	<div class="rotate" title="Delete word">↩</div>
 </div>
 <div class="back-face">
-      <div class="title <%= name.length < 14 ? '': name.length < 18 ? 'large': 'very-large' %>">
-            <%= name.slice(0,1).toUpperCase() + name.slice(1) %>
-      </div>
-      <div class="meaning">
-            <ul type="disc">
-            <% _.each(meaning.split(/[\s]*;[\s]*/).filter(function(m){ return m; }), function(m) { %>
-                  <li class="m-desc"> <%= m.slice(0,1).toUpperCase() + m.slice(1) %> </li>
-            <% }); %>
-            </ul>
-      </div>
-      <hr class="divider"/>
-      <div class="synonyms"><span class="label-txt">synonyms:</span><%= " " + synonyms.join(', ') %></div>
+	<div class="title <%= name.length < 14 ? '': name.length < 18 ? 'large': 'very-large' %>">
+		<%= name.slice(0,1).toUpperCase() + name.slice(1) %>
+	</div>
+	<div class="meaning">
+		<ul type="disc">
+		<% _.each(meaning.split(/[\s]*;[\s]*/).filter(function(m){ return m; }), function(m) { %>
+			<li class="m-desc"> <%= m.slice(0,1).toUpperCase() + m.slice(1) %> </li>
+		<% }); %>
+		</ul>
+	</div>
+	<hr class="divider"/>
+	<div class="synonyms"><span class="label-txt">synonyms:</span><%= " " + synonyms.join(', ') %></div>
 </div>

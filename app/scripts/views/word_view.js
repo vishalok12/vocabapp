@@ -19,7 +19,7 @@ define([
 			'click .remove': "showDeleteNotification",
 			'click .done-mark': "toggleRemembered",
 			'click .edit': "edit",
-			'click .word label': "pronounceWord",
+			'click .word label, .volume-icon': "pronounceWord",
 			'transitionend .front-face': "performRestAnimation"
 		},
 

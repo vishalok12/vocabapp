@@ -111,6 +111,7 @@ ul {
 		font-size: 25px;
 
 		label {
+			cursor: pointer;
 			font-weight: normal;
 		}
 	}
@@ -127,6 +128,13 @@ ul {
 		&.very-large {
 			font-size: 16px;
 		}
+	}
+	.volume-icon {
+		font-size: 14px;
+		padding: 0 4px;
+		margin-right: -19px;
+		vertical-align: top;
+		margin-left: -8px;
 	}
 	.meaning {
 		position: relative;
@@ -171,6 +179,14 @@ ul {
 	.done-mark {
 		right: 57px;
 		border: 1px solid $fern;
+		color: $fern;
+	}
+	.rotate {
+		position: absolute;
+		bottom: 8px;
+		left: 8px;
+		font-size: 20px;
+		@include user-select(none);
 		color: $fern;
 	}
 	.edit {
@@ -344,6 +360,7 @@ ul {
 		position: absolute;
 		left: 0;
 		top: 0;
+		z-index: 1;
 		width: 100%;
 		height: 100%;
 		display: none;
@@ -351,7 +368,7 @@ ul {
 	}
 
 	.stored-value, .edit-value {
-		padding: 10px 6px;
+		padding: 10px 30px;
 		color: $scorpion;
 		font-size: 1.2em;
 	}
@@ -361,6 +378,16 @@ ul {
 		top: 10px;
 		right: -27px;
 		cursor: pointer;
+	}
+
+	.drag-icon {
+		position: absolute;
+		top: 0px;
+		left: 0;
+		font-size: 16px;
+		color: #8CD892;
+		padding: 16px 12px 14px;
+		cursor: move;
 	}
 }
 
