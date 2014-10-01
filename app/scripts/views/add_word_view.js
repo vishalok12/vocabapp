@@ -118,7 +118,7 @@ define([
 					that.createEmptyMeaningInput();
 				}
 				if (synonyms) {
-					that.$synonyms.val(synonyms.join(','));
+					that.$synonyms.val(synonyms.join(', '));
 				}
 				flip(that.$('.front-face'));
 			});

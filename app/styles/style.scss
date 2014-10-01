@@ -130,6 +130,8 @@ ul {
 		}
 	}
 	.volume-icon {
+		width: 21px;
+		height: 14px;
 		font-size: 14px;
 		padding: 0 4px;
 		margin-right: -19px;
@@ -218,6 +220,7 @@ ul {
 		height: 172px;
 		position: relative;
 		overflow: hidden;
+		border-bottom: 1px solid rgb(153, 170, 240);
 
 		.new-meaning-btn {
 			background: #92a1d1;
@@ -334,8 +337,18 @@ ul {
 }
 
 #meaning-list {
-	padding: 4px 24px;
+	padding: 4px;
 	font-size: 15px;
+
+	.stored-value {
+		padding: 10px 4px;
+		background: rgb(171, 191, 255);
+		border: 1px solid rgb(90, 90, 90);
+	}
+
+	.drag-icon {
+		display: none;
+	}
 }
 
 .word-meaning {
@@ -375,7 +388,7 @@ ul {
 
 	.trash-icon {
 		position: absolute;
-		top: 10px;
+		top: 8px;
 		left: -28px;
 		cursor: pointer;
 	}
@@ -394,10 +407,11 @@ ul {
 #synonyms {
 	border: none;
 	height: 26px;
-	padding: 4px 10px;
+	padding: 4px;
 	font-size: 18px;
-	width: 92%;
+	width: 98%;
 	margin-top: 12px;
+	color: $scorpion;
 }
 
 .synonyms {
