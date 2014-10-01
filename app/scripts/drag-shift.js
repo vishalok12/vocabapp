@@ -1,11 +1,32 @@
-define([
-	'jquery'
-], function ($) {
+/**
+ * drag-shift
+ * http://github.com/vishalok12
+ * Copyright (c) 2014 Vishal Kumar
+ * Licensed under the MIT License.
+ */
+'use strict';
+(function (factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['jquery'], factory);
+  } else {
+    // Browser globals
+    factory(jQuery);
+  }
+}(function ($) {
 	'use strict';
 
 	var IS_TOUCH_DEVICE = ('ontouchstart' in document.documentElement);
+	/**
+	 * mouse move threshold (in px) until drag action starts
+	 * @type {Number}
+	 */
 	var DRAG_THRESHOLD = 5;
 
+	/**
+	 * Javascript events for touch device/desktop
+	 * @return {Object}
+	 */
 	var dragEvents = (function () {
 		if (IS_TOUCH_DEVICE) {
 			return {
@@ -27,8 +48,8 @@ define([
 		var dragging = false;
 		var $clone;
 		var dragElement;
-		var originalClientX, originalClientY;
-		var $elements;
+		var originalClientX, originalClientY;	// client(X|Y) position before drag starts
+		var $elements;												// list of elements to shift between
 		var touchDown = false;
 		var leftOffset, topOffset;
 
@@ -49,15 +70,18 @@ define([
 			}
 
 			function dragStartHandler(e) {
+				// a mouse down/touchstart event, but still drag doesn't start till threshold reaches
+				// stopPropagation is compulsory, otherwise touchmove fires only once (android < 4 issue)
 				e.stopPropagation();
 				touchDown = true;
-				// dragging = true;
 				originalClientX = e.clientX || e.originalEvent.touches[0].clientX;
 				originalClientY = e.clientY || e.originalEvent.touches[0].clientY;
 				dragElement = self;
 			}
 		});
 
+		// bind mouse-move/touchmove on document
+		// (as it is not compulsory that event will trigger on dragging element)
 		$(document).on(dragEvents.MOVE, dragMoveHandler)
 			.on(dragEvents.END, dragEndHandler);
 
@@ -78,7 +102,7 @@ define([
 
 				shiftHoveredElement($clone, $dragElement, $elements);
 
-			// check for drag threshold
+			// check for drag threshold (drag has not started yet)
 			} else if (Math.abs(dragDistanceX) > DRAG_THRESHOLD ||
 					Math.abs(dragDistanceY) > DRAG_THRESHOLD) {
 				$clone = clone($dragElement);
@@ -91,13 +115,14 @@ define([
 					- parseInt($dragElement.css('padding-top'));
 
 				// put cloned element just above the dragged element
+				// and move it instead of original element
 				$clone.css({
 					left: leftOffset,
 					top: topOffset
 				});
 				$dragElement.parent().append($clone);
 
-				// hide dragged element
+				// hide original dragged element
 				$dragElement.css('visibility', 'hidden');
 
 				dragging = true;
@@ -106,6 +131,8 @@ define([
 
 		function dragEndHandler(e) {
 			if (dragging) {
+				// remove the cloned dragged element and
+				// show original element back
 				e.stopPropagation();
 				dragging = false;
 				$clone.remove();
@@ -123,7 +150,7 @@ define([
 			position: 'absolute',
 			width: $element.width(),
 			height: $element.height(),
-			'z-index': 100000
+			'z-index': 100000	// very high value to prevent it to hide below other element(s)
 		});
 
 		return $clone;
@@ -133,7 +160,7 @@ define([
 	 * find the element on which the dragged element is hovering
 	 * @return {DOM Object} hovered element
 	 */
-	function getHoveredElement($clone, $dragElement, $swappableElements) {
+	function getHoveredElement($clone, $dragElement, $movableElements) {
 		var cloneOffset = $clone.offset();
 		var cloneWidth = $clone.width();
 		var cloneHeight = $clone.height();
@@ -145,8 +172,8 @@ define([
 		var horizontalMidPosition, verticalMidPosition;
 		var offset, overlappingX, overlappingY, inRange;
 
-		for (var i = 0; i < $swappableElements.length; i++) {
-			$currentElement = $swappableElements.eq(i);
+		for (var i = 0; i < $movableElements.length; i++) {
+			$currentElement = $movableElements.eq(i);
 
 			if ($currentElement[0] === $dragElement[0]) { continue; }
 
@@ -171,20 +198,21 @@ define([
 		}
 	}
 
-	function shiftHoveredElement($clone, $dragElement, $swappableElements) {
-		var hoveredElement = getHoveredElement($clone, $dragElement, $swappableElements);
+	function shiftHoveredElement($clone, $dragElement, $movableElements) {
+		var hoveredElement = getHoveredElement($clone, $dragElement, $movableElements);
 
 		if (hoveredElement !== $dragElement[0]) {
 			// shift all other elements to make space for the dragged element
-			var hoveredElementIndex = $swappableElements.index(hoveredElement);
-			var dragElementIndex = $swappableElements.index($dragElement);
+			var hoveredElementIndex = $movableElements.index(hoveredElement);
+			var dragElementIndex = $movableElements.index($dragElement);
 			if (hoveredElementIndex < dragElementIndex) {
 				$(hoveredElement).before($dragElement);
 			} else {
 				$(hoveredElement).after($dragElement);
 			}
 
-			shiftElementPosition($swappableElements, dragElementIndex, hoveredElementIndex);
+			// since elements order have changed, need to change order in jQuery Object too
+			shiftElementPosition($movableElements, dragElementIndex, hoveredElementIndex);
 		}
 	}
 
@@ -193,4 +221,4 @@ define([
 		return arr.splice(toIndex, 0, temp);
 	}
 
-});
+}));
