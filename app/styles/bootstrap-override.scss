@@ -33,3 +33,9 @@
 .no-padding {
 	padding: 0;
 }
+
+.ps-container .ps-scrollbar-y-rail {
+	background-color: rgb(238, 238, 238);
+	opacity: 0.9;
+	filter: alpha(opacity = 90);
+}
