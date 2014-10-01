@@ -3,7 +3,7 @@ define([
 	'backbone',
 	'views/add_word/meaning_view',
 	'templates',
-	'drag-shift'
+	'drag-arrange'
 ], function ($, Backbone, MeaningView, JST) {
 	'use strict';
 
@@ -46,7 +46,7 @@ define([
 
 			// TODO: should not use the child element here
 			// make all the meanings draggable to change the order
-			$('.word-meaning').swappable({
+			$('.word-meaning').arrangeable({
 				dragSelector: '.drag-icon'
 			});
 

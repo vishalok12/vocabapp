@@ -44,7 +44,7 @@
 		}
 	}());
 
-	$.fn.swappable = function(options) {
+	$.fn.arrangeable = function(options) {
 		var dragging = false;
 		var $clone;
 		var dragElement;
