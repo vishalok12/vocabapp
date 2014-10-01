@@ -129,29 +129,35 @@ define([
 	 */
 	function getHoveredElement($clone, $dragElement, $swappableElements) {
 		var cloneOffset = $clone.offset();
-		var elemWidth = $clone.width();
-		var elemHeight = $clone.height();
+		var cloneWidth = $clone.width();
+		var cloneHeight = $clone.height();
 		var cloneLeftPosition = cloneOffset.left;
-		var cloneRightPosition = cloneOffset.left + elemWidth;
+		var cloneRightPosition = cloneOffset.left + cloneWidth;
 		var cloneTopPosition = cloneOffset.top;
-		var cloneBottomPosition = cloneOffset.top + elemHeight;
+		var cloneBottomPosition = cloneOffset.top + cloneHeight;
 		var $currentElement;
+		var horizontalMidPosition, verticalMidPosition;
+		var offset, overlappingX, overlappingY, inRange;
 
 		for (var i = 0; i < $swappableElements.length; i++) {
 			$currentElement = $swappableElements.eq(i);
 
 			if ($currentElement[0] === $dragElement[0]) { continue; }
 
-			var offset = $currentElement.offset();
+			offset = $currentElement.offset();
+
+			// current element width and draggable element(clone) width or height can be different
+			horizontalMidPosition = offset.left + 0.5 * $currentElement.width();
+			verticalMidPosition = offset.top + 0.5 * $currentElement.height();
 
 			// check if this element position is overlapping with dragged element
-			var overlappingX = (offset.left + 0.5 * elemWidth < cloneRightPosition) &&
-				(offset.left + 0.5 * elemWidth > cloneLeftPosition);
+			overlappingX = (horizontalMidPosition < cloneRightPosition) &&
+				(horizontalMidPosition > cloneLeftPosition);
 
-			var overlappingY = (offset.top + 0.5 * elemHeight < cloneBottomPosition) &&
-				(offset.top + 0.5 * elemHeight > cloneTopPosition);
+			overlappingY = (verticalMidPosition < cloneBottomPosition) &&
+				(verticalMidPosition > cloneTopPosition);
 
-			var inRange = overlappingX && overlappingY;
+			inRange = overlappingX && overlappingY;
 
 			if (inRange) {
 				return $currentElement[0];
