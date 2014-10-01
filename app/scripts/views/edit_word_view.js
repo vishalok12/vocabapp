@@ -3,7 +3,7 @@ define([
 	'backbone',
 	'views/add_word/meaning_view',
 	'templates',
-	'drag-swap'
+	'drag-shift'
 ], function ($, Backbone, MeaningView, JST) {
 	'use strict';
 

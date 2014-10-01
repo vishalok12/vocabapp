@@ -5,13 +5,6 @@ define([
 
 	var IS_TOUCH_DEVICE = ('ontouchstart' in document.documentElement);
 	var DRAG_THRESHOLD = 5;
-	var dragging = false;
-	var $clone;
-	var dragElement;
-	var originalClientX, originalClientY;
-	var $elements;
-	var leftOffset, topOffset;
-	var touchDown = false;
 
 	var dragEvents = (function () {
 		if (IS_TOUCH_DEVICE) {
@@ -30,12 +23,15 @@ define([
 		}
 	}());
 
-	function init() {
-		$(document).on(dragEvents.MOVE, dragMoveHandler)
-			.on(dragEvents.END, dragEndHandler);
-	}
-
 	$.fn.swappable = function(options) {
+		var dragging = false;
+		var $clone;
+		var dragElement;
+		var originalClientX, originalClientY;
+		var $elements;
+		var touchDown = false;
+		var leftOffset, topOffset;
+
 		options = $.extend({}, options);
 
 		$elements = this;
@@ -62,6 +58,62 @@ define([
 			}
 		});
 
+		$(document).on(dragEvents.MOVE, dragMoveHandler)
+			.on(dragEvents.END, dragEndHandler);
+
+		function dragMoveHandler(e) {
+			if (!touchDown) { return; }
+
+			var $dragElement = $(dragElement);
+			var dragDistanceX = (e.clientX  || e.originalEvent.touches[0].clientX) - originalClientX;
+			var dragDistanceY = (e.clientY || e.originalEvent.touches[0].clientY) - originalClientY;
+
+			if (dragging) {
+				e.stopPropagation();
+
+				$clone.css({
+					left: leftOffset + dragDistanceX,
+					top: topOffset + dragDistanceY
+				});
+
+				shiftHoveredElement($clone, $dragElement, $elements);
+
+			// check for drag threshold
+			} else if (Math.abs(dragDistanceX) > DRAG_THRESHOLD ||
+					Math.abs(dragDistanceY) > DRAG_THRESHOLD) {
+				$clone = clone($dragElement);
+
+				// initialize left offset and top offset
+				// will be used in successive calls of this function
+				leftOffset = dragElement.offsetLeft - parseInt($dragElement.css('margin-left'))
+					- parseInt($dragElement.css('padding-left'));
+				topOffset = dragElement.offsetTop - parseInt($dragElement.css('margin-top'))
+					- parseInt($dragElement.css('padding-top'));
+
+				// put cloned element just above the dragged element
+				$clone.css({
+					left: leftOffset,
+					top: topOffset
+				});
+				$dragElement.parent().append($clone);
+
+				// hide dragged element
+				$dragElement.css('visibility', 'hidden');
+
+				dragging = true;
+			}
+		}
+
+		function dragEndHandler(e) {
+			if (dragging) {
+				e.stopPropagation();
+				dragging = false;
+				$clone.remove();
+				dragElement.style.visibility = 'visible';
+			}
+
+			touchDown = false;
+		}
 	};
 
 	function clone($element) {
@@ -69,58 +121,12 @@ define([
 
 		$clone.css({
 			position: 'absolute',
-			width: $element.outerWidth(),
-			height: $element.outerHeight(),
-			left: dragElement.offsetLeft,
-			top: dragElement.offsetTop,
+			width: $element.width(),
+			height: $element.height(),
 			'z-index': 100000
 		});
 
-		$element.parent().append($clone);
-
 		return $clone;
-	}
-
-	function dragMoveHandler(e) {
-		if (!touchDown) { return; }
-
-		var dragDistanceX = (e.clientX  || e.originalEvent.touches[0].clientX) - originalClientX;
-		var dragDistanceY = (e.clientY || e.originalEvent.touches[0].clientY) - originalClientY;
-
-		if (dragging) {
-			e.stopPropagation();
-
-			$clone.css({
-				left: leftOffset + dragDistanceX,
-				top: topOffset + dragDistanceY
-			});
-
-			shiftHoveredElement($clone, $(dragElement), $elements);
-
-		// check for drag threshold
-		} else if (Math.abs(dragDistanceX) > DRAG_THRESHOLD ||
-				Math.abs(dragDistanceY) > DRAG_THRESHOLD) {
-			$clone = clone($(dragElement));
-
-			leftOffset = dragElement.offsetLeft;
-			topOffset = dragElement.offsetTop;
-
-			// hide dragged element
-			dragElement.style.opacity = 0;
-
-			dragging = true;
-		}
-	}
-
-	function dragEndHandler(e) {
-		if (dragging) {
-			e.stopPropagation();
-			dragging = false;
-			$clone.remove();
-			dragElement.style.opacity = 1;
-		}
-
-		touchDown = false;
 	}
 
 	/**
@@ -181,9 +187,6 @@ define([
 			shiftElementPosition($swappableElements, dragElementIndex, hoveredElementIndex);
 		}
 	}
-
-	// initialize
-	init();
 
 	function shiftElementPosition(arr, fromIndex, toIndex) {
 		var temp = arr.splice(fromIndex, 1)[0];
