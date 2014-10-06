@@ -122,12 +122,23 @@ passport.use(new LocalStrategy(
 
 // Routes
 app.get('/', function( request, response ) {
-	var fileName = request.isAuthenticated() ? 'index.html' : 'homepage.html';
-
-	//dispatch our request
-	response.render(application_root + '/' + appDirectory + '/' + fileName);
+	var currentDirPath = application_root + '/' + appDirectory;
+	if (!request.isAuthenticated()) {
+		return response.render(currentDirPath + '/homepage.html');
+	} else {
+		// get the word list
+		getWordsForUser(request.user._id, function(error, words) {
+			if (error) {
+				// 500 error
+				return next(error);
+			} else {
+				return response.render(currentDirPath + '/index.html', {
+					dictionaryWords: words
+				});
+			}
+		});
 	}
-);
+});
 
 app.all('/api/*', function(request, response, next) {
 	if (request.isAuthenticated()) {
@@ -230,17 +241,16 @@ var WordModel = mongoose.model( 'Word', Word );
 var UserModel = mongoose.model( 'User', User );
 
 //Get a list of all words
-app.get('/api/words', function( request, response ) {
+app.get('/api/words', function(request, response, next) {
 	var userId;
 
 	userId = request.user._id;
 
-	return WordModel.find({ 'userId': userId },
-			'name meaning synonyms remembered', function( err, words, next ) {
-		if( !err ) {
-			return response.send( words );
+	return getWordsForUser(userId, function(err, words) {
+		if (err) {
+			return next(err);
 		} else {
-			return next( err );
+			return response.send(words);
 		}
 	});
 });
@@ -336,6 +346,17 @@ function afterSignup(userId) {
 	word.save( function( error ) {
 		if( error ) {
 			console.log( 'Error occurred in creating sample word' );
+		}
+	});
+}
+
+function getWordsForUser(userId, callback) {
+	WordModel.find({ 'userId': userId },
+			'name meaning synonyms remembered', function(err, words) {
+		if( !err ) {
+			return callback(null, words);
+		} else {
+			return callback(err);
 		}
 	});
 }

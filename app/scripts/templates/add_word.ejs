@@ -1,18 +1,20 @@
-<div class="front-face">
-  <div class="word-input-wrapper">
-    <input id="name" type="text" placeholder="Insert Word">
-    <div class="loading hidden"></div>
-  </div>
-</div>
-<div class="back-face">
-  <div class="title">Meaning</div>
-  <div class="meaning-list-cont">
-    <ul id="meaning-list"></ul>
-    <div class="add-new-meaning">
-        <div class="btn new-meaning-btn" title="add meaning">+</div>
-    </div>
-  </div>
-  <input id="synonyms" type="text" placeholder="Synonyms (comma separated)">
-  <div class="btn-cont"><input id="new-word-btn" type="button" value="done"></div>
-  <div class="back">↩</div>
+<div class="word-card">
+	<div class="front-face">
+		<div class="word-input-wrapper">
+			<input id="name" type="text" placeholder="Insert Word" value="<%- word %>">
+			<div class="loading hidden"></div>
+		</div>
+	</div>
+	<div class="back-face">
+		<div class="title">Meaning</div>
+		<div class="meaning-list-cont">
+			<ul id="meaning-list"></ul>
+			<div class="add-new-meaning">
+					<div class="btn new-meaning-btn" title="add meaning">+</div>
+			</div>
+		</div>
+		<input id="synonyms" type="text" placeholder="Synonyms (comma separated)">
+		<div class="btn-cont"><input id="new-word-btn" type="button" value="done"></div>
+		<div class="back">↩</div>
+	</div>
 </div>

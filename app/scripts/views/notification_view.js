@@ -1,50 +1,60 @@
 /*global define*/
 
 define([
-    'jquery',
-    'backbone',
-    'templates'
+	'jquery',
+	'backbone',
+	'templates'
 ], function ($, Backbone, JST) {
-    'use strict';
+	'use strict';
 
-    var WordView = Backbone.View.extend({
-        el: '#notification',
+	var NotificationView = Backbone.View.extend({
+		template: JST['app/scripts/templates/notification.ejs'],
 
-        template: JST['app/scripts/templates/notification.ejs'],
+		events: {
+			'click .undo-action': "triggerUndo",
+		},
 
-        events: {
-            'click .undo-action': "undoAction",
-        },
+		initialize: function() {
+			var that = this;
 
-        render: function(text) {
-            //this.el is what we defined in tagName. use $el to get access to jQuery html() function
-            this.$el.html( this.template( {text: text} ) );
+			app.on('word:predelete', function(text) {
+				that.display(text)
+			});
 
-            return this;
-        },
+			app.on('word:delete', function() {
+				that.hide();
+			});
 
-        undoAction: function() {
-            console.log('trigger undo');
-            this.trigger('undo:delete');
-            this.hide();
-            clearTimeout(this.hideTimeoutId);
-        },
+			this.hide();
+		},
 
-        display: function(text, period) {
-            var that = this;
-            this.render(text);
+		render: function(text) {
+			//this.el is what we defined in tagName. use $el to get access to jQuery html() function
+			this.$el.html( this.template( {text: text} ) );
 
-            this.$el.show();
-            this.hideTimeoutId = setTimeout(function() {
-                that.hide();
-            }, period);
-        },
+			return this;
+		},
 
-        hide: function() {
-            this.$el.hide();
-        }
+		triggerUndo: function() {
+			console.log('trigger undo');
+			app.trigger('notification:undo');
 
-    });
+			this.hide();
+		},
 
-    return WordView;
+		display: function(text) {
+			text = text ? text.slice(0,1).toUpperCase() + text.slice(1).toLowerCase() : '';
+			var that = this;
+			this.render('Deleting ' + text);
+
+			this.$el.show();
+		},
+
+		hide: function() {
+			this.$el.hide();
+		}
+
+	});
+
+	return NotificationView;
 });

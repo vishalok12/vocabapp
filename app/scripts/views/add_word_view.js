@@ -7,7 +7,7 @@ define([
 	'use strict';
 
 	var AddWordView = Backbone.View.extend({
-		el: '#add-word',
+		id: 'add-word',
 
 		template: JST['app/scripts/templates/add_word.ejs'],
 
@@ -19,15 +19,15 @@ define([
 			'click .new-meaning-btn': "createEmptyMeaningInput"
 		},
 
-		initialize: function() {
-			this.render();
+		initialize: function(options) {
+			this.render(options);
 			this.$meaningList = this.$('#meaning-list');
 			this.$synonyms = this.$('#synonyms');
 			this.$wordInput = this.$('#name');
 		},
 
-		render: function() {
-			this.$el.html( this.template() );
+		render: function(options) {
+			this.$el.html( this.template(options) );
 
 			return this;
 		},
@@ -79,7 +79,7 @@ define([
 				return;
 			}
 
-			app.dictionaryView.collections.create({
+			app.trigger('addword', {
 				name: wordName,
 				meaning: meaning,
 				synonyms: synonyms

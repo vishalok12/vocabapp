@@ -11,43 +11,30 @@ define([
 ], function ($, _, Backbone, DictionaryCollection, WordView, SearchView, JST) {
 	'use strict';
 
-	window.app = window.app || {};
-
 	var DictionaryView = Backbone.View.extend({
-		el: '#dictionary',
+		id: 'dictionary',
 
-		initialize: function(words) {
-			// this.$dictionary = this.$el.find('#dictionary');
+		initialize: function(options) {
+			this.wordType = options ? options.wordType : '';
 			this.$addWord = this.$el.find('.add-word');
 
-			this.collections = new DictionaryCollection();
-			this.collections.fetch();
-
-			// create search view, words are still being fetched using ajax!!
-			// that's why it's empty
-			this.searchView = new SearchView();
+			this.collections = options.collections;
 
 			this.listenTo(this.collections, "add", this.addWord);
 			this.listenTo(this.collections, "destroy", this.removeWord);
+			this.listenTo(this.collections, "change:remembered", this.setWordDisplay);
+
+			this.render();
 		},
 
-		render: function(wordNames) {
+		render: function() {
 			var filteredModels;
 
-			this.$el.empty();
-			if (app.wordType === 'all') {
+			if (this.wordType === 'all') {
 				filteredModels = this.collections.models;
 			} else {
-				var remembered = app.wordType === "remembered" ? true : false;
+				var remembered = this.wordType === "remembered" ? true : false;
 				filteredModels = this.collections.where( {remembered: remembered} );
-			}
-			if (wordNames) {
-				wordNames = wordNames.map(function(word) {
-					return word.toLowerCase();
-				});
-				filteredModels = filteredModels.filter(function(model) {
-					return wordNames.indexOf(model.get('name')) + 1;
-				});
 			}
 
 			var wordViews = [];
@@ -59,13 +46,6 @@ define([
 			}, this);
 
 			this.$el.append($words);
-
-			for (var i = 0; i < wordViews.length; i++) {
-				wordViews[i].afterAppend();
-			}
-
-			// this.searchView.clear();
-			hideOtherContainers();
 
 			return this;
 		},
@@ -79,6 +59,16 @@ define([
 			this.searchView.removeWord( word.get('name') );
 		},
 
+		setWordDisplay: function(wordModel, remembered) {
+			if (this.wordType !== 'all') {
+				// remove the view
+				// for now, re-render whole dictionary view
+				// TODO: render/remove only the affected word
+				this.$el.empty();
+				this.render();
+			}
+		},
+
 		renderWord: function(word) {
 			var wordView = new WordView({ model: word });
 			var $wordContainer = this.$('.word-container');
@@ -87,19 +77,12 @@ define([
 				this.$el.append($wordContainer);
 			}
 			$wordContainer.append( wordView.render().el );
-			wordView.afterAppend();
 		},
 
 		editWord: function(model) {
 			app.editWordView.render(model);
 			$('#edit-word').show();
 			// window.scrollTo(0,0);
-		},
-
-		showAddWordMessage: function(keyword) {
-			var messageTemplate = JST['app/scripts/templates/add_word_message.ejs'];
-			this.$el.empty();
-			this.$el.append(messageTemplate({keyword: keyword}));
 		}
 
 	});
@@ -153,13 +136,6 @@ define([
 			callback('');
 		});
 	}
-
-	function hideOtherContainers() {
-		$('#game-wrapper').hide();
-		$('#wrapper').show();
-		app.navBarView.showSearchBar();
-	}
-
 
 	return DictionaryView;
 });

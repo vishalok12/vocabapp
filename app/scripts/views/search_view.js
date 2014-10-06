@@ -15,11 +15,17 @@ define([
 			'input #word-search': "filterWords"
 		},
 
-		initialize: function (words) {
-			// this.dictionaryView = dictionaryView;
-			this.words = words;
+		initialize: function (options) {
+			var wordCollection = options.collections;
+			this.words = wordCollection.models.map(function(word) {
+				return word.get('name').toLowerCase();
+			});
+
+			// Make Tree for words to search faster
+			this.parseWordsToTree();
+
+			// DOM variables
 			this.$input = this.$el.find('#word-search');
-			this.words = [];
 		},
 
 		render: function () {
@@ -31,10 +37,6 @@ define([
 			var word, node;
 			var i, j;
 			var words = this.words;
-
-			// if (!this.words) {
-			//     words = this.words = this.dictionaryView.collections.pluck('name');
-			// }
 
 			for (i = 0; i < words.length; i++) {
 				word = words[i].toLowerCase();
@@ -56,11 +58,6 @@ define([
 			var i = 0;
 			var root = this.root;
 			var words = this.words;
-
-			if (typeof root === "undefined") {
-				this.parseWordsToTree();
-				root = this.root;
-			}
 
 			var node = root;
 			var s = substring.toLowerCase();
@@ -92,12 +89,7 @@ define([
 			var searchKey = this.$input.val();
 			var words = this.getMatchedWords(searchKey);
 
-			if (words.length) {
-				app.dictionaryView.render(words);
-			} else {
-				// show suggestion to add this search key as new word in list
-				app.dictionaryView.showAddWordMessage(searchKey);
-			}
+			app.trigger('search:words', words, searchKey);
 		},
 
 		clear: function() {
@@ -105,7 +97,6 @@ define([
 		}
 
 	});
-
 
 	function Node() {
 		this.indexes = [];

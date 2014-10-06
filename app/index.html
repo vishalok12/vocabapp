@@ -1,65 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
 
-    <title>Vocab Tree</title>
+		<title>Vocab Tree</title>
 
-    <script type="text/javascript">
+		<script type="text/javascript">
 
-      var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-43963934-1']);
-      _gaq.push(['_setDomainName', 'www.wordtray.com']);
-      _gaq.push(['_trackPageview', '/index.html']);
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-43963934-1']);
+			_gaq.push(['_setDomainName', 'www.wordtray.com']);
+			_gaq.push(['_trackPageview', '/index.html']);
 
-    </script>
+		</script>
 
-    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
-    <!-- build:css({app,.tmp}) styles/main.css -->
-    <link rel="stylesheet" href="bower_components/sass-bootstrap/dist/css/bootstrap.css">
-    <link rel="stylesheet" href="bower_components/fontawesome/css/font-awesome.css">
-    <link rel="stylesheet" href="styles/lib/perfect-scrollbar.css" type="text/css" media="screen">
-    <link rel="stylesheet" href="styles/style.css" type="text/css" media="screen">
-    <!-- endbuild -->
-  </head>
-  <body class="hover">
-    <nav id="navigation" class="nav navbar-default" role="navigation">
-    </nav>
-    <div id="wrapper">
-      <section id="dictionary"></section>
-      <section id="add-word" class="word-card"></section>
-      <section id="edit-word"></section>
-      <section id="notification"></section>
-    </div>
-    <div id="game-wrapper" style="display:none;"></div>
+		<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+		<!-- build:css({app,.tmp}) styles/main.css -->
+		<link rel="stylesheet" href="bower_components/sass-bootstrap/dist/css/bootstrap.css">
+		<link rel="stylesheet" href="bower_components/fontawesome/css/font-awesome.css">
+		<link rel="stylesheet" href="styles/lib/perfect-scrollbar.css" type="text/css" media="screen">
+		<link rel="stylesheet" href="styles/style.css" type="text/css" media="screen">
+		<!-- endbuild -->
+	</head>
+	<body class="hover">
+		<nav id="navigation" class="nav navbar-default" role="navigation">
+		</nav>
+		<div id="wrapper">
+			<section id="notification" style="display: none;"></section>
+		</div>
 
-    <!-- build:js scripts/main.js -->
-    <script data-main="scripts/main" src="bower_components/requirejs/require.js"></script>
-    <!-- endbuild -->
+		<!-- build:js scripts/main.js -->
+		<script data-main="scripts/main" src="bower_components/requirejs/require.js"></script>
+		<!-- endbuild -->
 
-    <script type="text/javascript">
-      (function() {
-        var hoverTimeout;
+		<script>
+			window.dictionaryWords = <%- JSON.stringify(dictionaryWords) %>;
+		</script>
 
-        window.onscroll = function(e) {
-          $('body').removeClass('hover');
-          
-          clearTimeout(hoverTimeout);
-          hoverTimeout = setTimeout(function() {
-            $('body').addClass('hover');
-          }, 1000);
-        }
-      })();
-      
-    </script>
+		<script type="text/javascript">
+			(function() {
+				var hoverTimeout;
 
-    <script type="text/javascript">
-      (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-      })();
-    </script>
-  </body>
+				window.onscroll = function(e) {
+					$('body').removeClass('hover');
+					
+					clearTimeout(hoverTimeout);
+					hoverTimeout = setTimeout(function() {
+						$('body').addClass('hover');
+					}, 1000);
+				}
+			})();
+			
+		</script>
+
+		<script type="text/javascript">
+			(function() {
+				var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+			})();
+		</script>
+	</body>
 </html>
