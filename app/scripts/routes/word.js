@@ -9,12 +9,12 @@ define([
 	'views/game_view',
 	'views/notification_view',
 	'views/edit_word_view',
-	'views/search_view',
 	'views/no_words_view',
+	'views/search_view',
 	'collections/dictionary',
 
 ], function ($, Backbone, DictionaryView, NavBarView, AddWordView, GameView,
-		NotificationView, EditWordView, SearchView, NoWordsView, DictionaryCollection) {
+		NotificationView, EditWordView, NoWordsView, SearchView, DictionaryCollection) {
 	'use strict';
 
 	var WordRouter = Backbone.Router.extend({
@@ -26,24 +26,34 @@ define([
 			'play/:name': 'playGame'
 		},
 
-		initialize: function() {
+		initialize: function(route) {
+			// bind event for all routes
+			// methods, which will be called on every page change
+			this.on('route', function(routeEvent) {
+				app.trigger('page:change');
+
+				if (routeEvent === 'addWord') {
+					// hide search view
+					$('#search-container').hide();
+				} else {
+					// show search view
+					$('#search-container').show();
+				}
+			});
 			var that = this;
 			window.app = _.extend({}, Backbone.Events);
-
-			new NavBarView({el: '#navigation'});
-			new NotificationView({el: '#notification'});
 
 			this.dictionaryCollection = new DictionaryCollection();
 
 			// words are already present (global script in index.js)
 			if (window.dictionaryWords) {
-				this.dictionaryWords = $.extend(true, [], window.dictionaryWords.map(function(word) {
+				var dictionaryWords = $.extend(true, [], window.dictionaryWords.map(function(word) {
 					// parse method for word model
 					word.id = word._id;
 					word.synonyms = word.synonyms ? word.synonyms.split(',') : [];
 					return word;
 				}));
-				this.dictionaryCollection.reset(this.dictionaryWords);
+				this.dictionaryCollection.reset(dictionaryWords);
 
 				this.afterWordFetch();
 			} else {
@@ -55,7 +65,7 @@ define([
 			}
 
 			var savedScrollY;
-			// event binding
+			// event bindings
 			app.on('word:edit', function(wordModel) {
 				// disable parent view from scroll
 				$('#dictionary').css({
@@ -82,18 +92,17 @@ define([
 			});
 
 			app.on('addword', function(word) {
-				that.dictionaryCollection.create(word);
+				dictionaryCollection.create(word);
 			});
 
 			app.on('search:words', function(words, searchKey) {
 				if (words.length) {
-					var searchWordCollection = new DictionaryCollection;
-					searchWordCollection.reset(
-						that.dictionaryWords
-						.filter(function(word) {
-							return words.indexOf(word.name.toLowerCase()) !== -1;
+					var searchWordCollection = new DictionaryCollection(
+						that.dictionaryCollection.filter(function(model) {
+							return words.indexOf(model.get('name').toLowerCase()) !== -1;
 						})
 					);
+
 					// render filtered words
 					var dictionaryView = new DictionaryView({
 						wordType: '',
@@ -118,8 +127,7 @@ define([
 
 		showUnRemembered: function() {
 			var dictionaryView = new DictionaryView({
-				wordType: '',
-				collections: this.dictionaryCollection
+				collections: this.dictionaryCollection.unremembered()
 			});
 
 			this.setCurrentView(dictionaryView);
@@ -130,8 +138,7 @@ define([
 
 		showRemembered: function() {
 			var dictionaryView = new DictionaryView({
-				wordType: 'remembered',
-				collections: this.dictionaryCollection
+				collections: this.dictionaryCollection.remembered()
 			});
 
 			this.setCurrentView(dictionaryView);
@@ -142,7 +149,6 @@ define([
 
 		showAll: function() {
 			var dictionaryView = new DictionaryView({
-				wordType: 'all',
 				collections: this.dictionaryCollection
 			});
 
@@ -184,9 +190,16 @@ define([
 		afterWordFetch: function() {
 			Backbone.history.start();
 
-			new SearchView({
+			new NavBarView({
+				el: '#navigation'
+			});
+
+			this.searchView = new SearchView({
+				el: '#search-container',
 				collections: this.dictionaryCollection
 			});
+
+			new NotificationView({el: '#notification'});
 		}
 
 	});

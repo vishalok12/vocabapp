@@ -9,7 +9,8 @@ define([
 	'use strict';
 
 	var SearchView = Backbone.View.extend({
-		el: '#nav-search',
+		id: 'nav-search',
+		template: JST['app/scripts/templates/search.ejs'],
 
 		events: {
 			'input #word-search': "filterWords"
@@ -24,12 +25,19 @@ define([
 			// Make Tree for words to search faster
 			this.parseWordsToTree();
 
+			this.render();
+
+			// clear search text after page change
+			app.on('page:change', this.clear, this);
+
 			// DOM variables
 			this.$input = this.$el.find('#word-search');
 		},
 
 		render: function () {
-			this.$el.html(this.template(this.model.toJSON()));
+			this.$el.html(this.template());
+
+			return this;
 		},
 
 		parseWordsToTree: function() {

@@ -439,8 +439,11 @@ ul {
 	}
 }
 
-.search-container {
+#search-container {
 	@extend .no-padding;
+
+	margin-top: 51px;
+	border-bottom: 1px solid rgb(68, 191, 230);
 }
 
 #nav-search {
@@ -654,8 +657,7 @@ ul {
 	$cardMaxWidth: 310px;
 
 	#wrapper {
-		margin-top: 96px;
-		padding: 30px 0 20px;
+		padding: 10px 0 20px;
 
 		.word-card {
 			width: 90%;
@@ -675,7 +677,7 @@ ul {
 
 	#add-word {
 		width: $cardMaxWidth;
-		margin: 0 auto;
+		margin: 50px auto 0;
 	}
 }
 
@@ -683,7 +685,8 @@ ul {
 	$cardMaxWidth: 750px;
 
 	#wrapper {
-		margin: 52px 0 20px;
+		// margin: 52px 0 20px;
+		margin: 0 0 20px;
 
 		.word-card {
 			width: 240px;
