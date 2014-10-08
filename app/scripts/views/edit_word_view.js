@@ -80,8 +80,13 @@ define([
 		},
 
 		close: function() {
-			app.trigger('edit:close');
+			// remove all meaning views
+			_.each(this.meaningViews, function(meaningView) {
+				typeof meaningView.close === "function" ? meaningView.close() : meaningView.remove();
+			});
+
 			this.remove();
+			app.trigger('edit:close');
 		}
 	});
 

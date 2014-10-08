@@ -15,7 +15,6 @@ define([
 		id: 'dictionary',
 
 		initialize: function(options) {
-			this.wordType = options ? options.wordType : '';
 			this.$addWord = this.$el.find('.add-word');
 
 			this.collections = options.collections;
@@ -23,16 +22,18 @@ define([
 			this.listenTo(this.collections, "add", this.addWord);
 			this.listenTo(this.collections, "destroy", this.removeWord);
 
+			this.wordViews = [];
+
 			this.render();
 		},
 
 		render: function() {
-			var wordViews = [];
-			var $words = $('<div class="word-container">');
+			var $words = $();
+
 			this.collections.models.map(function(word) {
 				var wordView = new WordView({ model: word });
-				$words.append( wordView.render().el );
-				wordViews.push(wordView);
+				$words = $words.add( wordView.render().el );
+				this.wordViews.push(wordView);
 			}, this);
 
 			this.$el.append($words);
@@ -51,12 +52,17 @@ define([
 
 		renderWord: function(word) {
 			var wordView = new WordView({ model: word });
-			var $wordContainer = this.$('.word-container');
-			if (!$wordContainer.length) {
-				$wordContainer = $('<div class="word-container">');
-				this.$el.append($wordContainer);
-			}
-			$wordContainer.append( wordView.render().el );
+
+			this.$el.append(wordView.render().el);
+			this.wordViews.push(wordView);
+		},
+
+		close: function() {
+			_.each(this.wordViews, function(wordView) {
+				typeof wordView.close === "function" ? wordView.close() : wordView.remove();
+			});
+
+			this.remove();
 		}
 
 	});

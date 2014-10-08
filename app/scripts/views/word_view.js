@@ -78,7 +78,13 @@ define([
 		},
 
 		close: function() {
+			// remove binding if any
 			this.stopListening();
+
+			// destroy perfect-scrollbar bindings
+			this.$('.meaning').perfectScrollbar('destroy');
+
+			this.remove();
 		},
 
 		toggleRemembered: function() {
