@@ -26,12 +26,10 @@ define([
 		},
 
 		initialize: function() {
-			console.log('initialize for model', this.model.get('name'));
-			// this.listenTo(this.model, "add", this.render);
 			this.listenTo(this.model, "change", this.render);
 			this.listenTo(this.model, "change:remembered", this.remove);
 			this.audio = new Audio();
-			// this.listenTo(this.model, "remove", this.remove);
+
 			var that = this;
 			app.once("word:append", function() {
 				that.afterAppend()
@@ -51,7 +49,6 @@ define([
 			var that = this;
 
 			this.deleteTimeoutId = setTimeout(function() {
-				console.log('finally deleting word...');
 				app.trigger('word:delete', that.model.get('name'));
 				app.off('notification:undo');
 				that.deleteWord();

@@ -36,7 +36,6 @@ define([
 		},
 
 		triggerUndo: function() {
-			console.log('trigger undo');
 			app.trigger('notification:undo');
 
 			this.hide();
