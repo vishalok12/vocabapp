@@ -65,8 +65,8 @@ define([
 		},
 
 		deleteView: function() {
+			this.trigger('destroy', this);
 			this.remove();
-			this.trigger("destroy", this);
 		},
 
 		checkMeaning: function() {

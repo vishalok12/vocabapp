@@ -3,6 +3,7 @@ define([
 	'backbone',
 	'views/add_word/meaning_view',
 	'templates'
+
 ], function ($, Backbone, MeaningView, JST) {
 	'use strict';
 
@@ -132,7 +133,7 @@ define([
 			meaning = meaning || '';
 			var meaningView = new MeaningView({meaning: meaning});
 			this.$meaningList.append(meaningView.el);
-			meaningView.on("destroy", this.removeFromMeaningList, this);
+			this.listenTo(meaningView, 'destroy', this.removeFromMeaningList);
 			this.meaningViews.push(meaningView);
 
 			return meaningView;
@@ -148,6 +149,15 @@ define([
 
 			word = word.trim();
 			this.$wordInput.val(word);
+		},
+
+		close: function() {
+			this.$('.meaning-list-cont').perfectScrollbar('destroy');
+
+			// remove all child meaning views
+			_.each(this.meaningViews, function(meaningView) {
+				typeof meaningView.close === "function" ? meaningView.close() : meaningView.remove();
+			});
 		}
 	});
 

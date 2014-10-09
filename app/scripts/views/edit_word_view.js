@@ -46,14 +46,18 @@ define([
 		},
 
 		removeFromMeaningList: function(meaningView) {
-			this.meaningViews.splice(this.meaningViews.indexOf(meaningView), 1);
+			var viewIndex = this.meaningViews.indexOf(meaningView);
+
+			if (viewIndex > -1) {
+				this.meaningViews.splice(viewIndex, 1);
+			}
 		},
 
 		createNewMeaningInput: function(meaning) {
 			meaning = meaning || '';
 			var meaningView = new MeaningView({meaning: meaning});
 			this.$('.edit-meaning').append(meaningView.el);
-			meaningView.on("destroy", this.removeFromMeaningList, this);
+			this.listenTo(meaningView, 'destroy', this.removeFromMeaningList);
 			this.meaningViews.push(meaningView);
 
 			return meaningView;
@@ -80,6 +84,9 @@ define([
 		},
 
 		close: function() {
+			// remove drag-arrange binding
+			this.$('.word-meaning').arrangeable('destroy');
+
 			// remove all meaning views
 			_.each(this.meaningViews, function(meaningView) {
 				typeof meaningView.close === "function" ? meaningView.close() : meaningView.remove();

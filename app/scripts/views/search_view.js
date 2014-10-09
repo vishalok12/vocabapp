@@ -28,7 +28,7 @@ define([
 			this.render();
 
 			// clear search text after page change
-			app.on('page:change', this.clear, this);
+			this.listenTo(app, 'page:change', this.clear);
 
 			// DOM variables
 			this.$input = this.$el.find('#word-search');

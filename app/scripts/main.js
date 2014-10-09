@@ -21,7 +21,8 @@ require.config({
 		'perfect-scrollbar': 'vendor/perfect-scrollbar',
 		'jquery.mousewheel': 'vendor/jquery.mousewheel',
 		bootstrap_collapse: '../bower_components/sass-bootstrap/js/collapse',
-		bootstrap_dropdown: '../bower_components/sass-bootstrap/js/dropdown'
+		bootstrap_dropdown: '../bower_components/sass-bootstrap/js/dropdown',
+		'drag-arrange': '../bower_components/jquery-dragarrange/drag-arrange'
 	}
 });
 

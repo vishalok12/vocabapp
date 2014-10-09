@@ -108,6 +108,14 @@ define([
 			} else {
 				return this.canAnswer;
 			}
+		},
+
+		close: function() {
+			if (this.wordView) {
+				this.wordView.close();
+			}
+
+			this.remove();
 		}
 
 	});

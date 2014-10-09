@@ -50,14 +50,11 @@ define([
 
 			this.deleteTimeoutId = setTimeout(function() {
 				app.trigger('word:delete', that.model.get('name'));
-				app.off('notification:undo');
 				that.deleteWord();
+
 			}, DELETE_TIME_GAP);
 
-			app.on('notification:undo', function() {
-				app.off('notification:undo');
-				that.cancelDeleteAction();
-			});
+			this.listenTo(app, 'notification:undo', this.cancelDeleteAction);
 
 			this.$el.addClass('hide');
 
@@ -65,6 +62,9 @@ define([
 		},
 
 		cancelDeleteAction: function() {
+			// unbind notification event binding
+			this.stopListening(app, 'notification:undo');
+
 			if (this.deleteTimeoutId) {
 				clearTimeout(this.deleteTimeoutId);
 				this.deleteTimeoutId = null;

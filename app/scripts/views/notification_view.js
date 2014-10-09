@@ -15,15 +15,8 @@ define([
 		},
 
 		initialize: function() {
-			var that = this;
-
-			app.on('word:predelete', function(text) {
-				that.display(text)
-			});
-
-			app.on('word:delete', function() {
-				that.hide();
-			});
+			this.listenTo(app, 'word:predelete', this.display);
+			this.listenTo(app, 'word:delete', this.hide);
 
 			this.hide();
 		},
