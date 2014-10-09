@@ -158,6 +158,8 @@ define([
 			_.each(this.meaningViews, function(meaningView) {
 				typeof meaningView.close === "function" ? meaningView.close() : meaningView.remove();
 			});
+
+			this.remove();
 		}
 	});
 
