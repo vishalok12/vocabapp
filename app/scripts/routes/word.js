@@ -32,6 +32,8 @@ define([
 			this.on('route', function(routeEvent) {
 				app.trigger('page:change');
 
+				this.navBarView.highlight(routeEvent)
+
 				if (routeEvent === 'addWord') {
 					// hide search view
 					$('#search-container').hide();
@@ -188,9 +190,7 @@ define([
 		},
 
 		afterWordFetch: function() {
-			Backbone.history.start();
-
-			new NavBarView({
+			this.navBarView = new NavBarView({
 				el: '#navigation'
 			});
 
@@ -200,6 +200,8 @@ define([
 			});
 
 			new NotificationView({el: '#notification'});
+
+			Backbone.history.start();
 		}
 
 	});
