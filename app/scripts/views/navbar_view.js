@@ -1,61 +1,64 @@
 define([
-    'jquery',
-    'backbone',
-    'templates',
-    'bootstrap_collapse',
-    'bootstrap_dropdown'
+	'jquery',
+	'backbone',
+	'templates',
+	'bootstrap_collapse',
+	'bootstrap_dropdown'
 ], function ($, Backbone, JST) {
-    'use strict';
+	'use strict';
 
-    var NavBarView = Backbone.View.extend({
-        el: '#navigation',
-        template: JST['app/scripts/templates/navbar.ejs'],
+	var NavBarView = Backbone.View.extend({
+		template: JST['app/scripts/templates/navbar.ejs'],
 
-        events: {
-            'click .menu:not(".dropdown")': "makeCurrent"
-        },
+		events: {
+			'click .menu:not(".dropdown")': "makeCurrent"
+		},
 
-        initialize: function() {
-            this.render();
-            this.$target = this.$el.find('#navbar-collapse-1');
-            this.$search = this.$('#nav-search');
-        },
+		initialize: function() {
+			this.render();
+			this.$target = this.$el.find('#navbar-collapse-1');
+			this.$search = this.$('#nav-search');
+		},
 
-        render: function() {
-            //this.el is what we defined in tagName. use $el to get access to jQuery html() function
-            this.$el.html( this.template() );
+		render: function() {
+			this.$el.html( this.template() );
 
-            return this;
-        },
+			return this;
+		},
 
-        makeCurrent: function(e) {
-            this.$el.find('.menu').removeClass('active');
-            $(e.currentTarget).addClass('active');
-            this.$target.collapse('hide');
-            _gaq.push(['_trackEvent', 'Navigation', 'click', e.currentTarget.textContent]);
-        },
+		makeCurrent: function(e) {
+			this.$el.find('.menu').removeClass('active');
+			$(e.currentTarget).addClass('active');
+			this.$target.collapse('hide');
+			_gaq.push(['_trackEvent', 'Navigation', 'click', e.currentTarget.textContent]);
+		},
 
-        highlight: function(nav) {
-            this.$('.menu').removeClass('active');
-            switch(nav) {
-                case 'add-word':
-                    this.$('.add-new-word').addClass('active');
-                    this.hideSearchBar();
-                    break;
-                default:
-                    this.$('.' + nav).addClass('active');
-                    break;
-            }
-        },
+		highlight: function(nav) {
+			console.log(nav);
+			this.$('.menu').removeClass('active');
+			switch(nav) {
+				case 'showUnRemembered':
+					this.$('.unremembered').addClass('active');
+					break;
+				case 'showRemembered':
+					this.$('.remembered').addClass('active');
+					break;
+				case 'showAll':
+					this.$('.all').addClass('active');
+					break;
+				case 'addWord':
+					this.$('.add-new-word').addClass('active');
+					break;
+				case 'playGame':
+					this.$('#play .menu').addClass('active');
+					break;
+				default:
+					this.$('.' + nav).addClass('active');
+					break;
+			}
+		}
 
-        hideSearchBar: function() {
-            this.$search.addClass('hide');
-        },
+	});
 
-        showSearchBar: function() {
-            this.$search.removeClass('hide');
-        }
-    });
-
-    return NavBarView;
+	return NavBarView;
 });

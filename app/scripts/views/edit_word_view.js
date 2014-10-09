@@ -7,46 +7,38 @@ define([
 ], function ($, Backbone, MeaningView, JST) {
 	'use strict';
 
-	var savedScrollY;
-
 	var EditWordView = Backbone.View.extend({
-		el: '#edit-word',
+		id: 'edit-word',
 
 		template: JST['app/scripts/templates/edit_word.ejs'],
 
 		events: {
-			'click .edit-btn': 'saveMeaning',
+			'click .save-btn': 'saveMeaning',
 			'click .close-btn': 'close'
 		},
 
-		render: function(wordModel) {
-			this.meaningViews = [];
-			this.wordModel = wordModel;
+		initialize: function() {
+			this.render();
+		},
 
-			var meanings = wordModel.get('meaning').split(';').filter(function(meaning) {
+		render: function() {
+			this.meaningViews = [];
+
+			var meanings = this.model.get('meaning').split(';').filter(function(meaning) {
 				return meaning;
 			});
 			var meaningView;
 
-			this.$el.html( this.template(wordModel.toJSON()) );
+			this.$el.html( this.template(this.model.toJSON()) );
 
 			var i;
 			for (i = 0; i < meanings.length; i++) {
 				this.createNewMeaningInput(meanings[i]);
 			}
 
-			// save scroll value
-			savedScrollY = $(window).scrollTop();
-
-			// disable parent view from scroll
-			$('#dictionary').css({
-				'position': 'fixed'
-			});
-			$('html').addClass('blurry');
-
 			// TODO: should not use the child element here
 			// make all the meanings draggable to change the order
-			$('.word-meaning').arrangeable({
+			this.$('.word-meaning').arrangeable({
 				dragSelector: '.drag-icon'
 			});
 
@@ -54,14 +46,18 @@ define([
 		},
 
 		removeFromMeaningList: function(meaningView) {
-			this.meaningViews.splice(this.meaningViews.indexOf(meaningView), 1);
+			var viewIndex = this.meaningViews.indexOf(meaningView);
+
+			if (viewIndex > -1) {
+				this.meaningViews.splice(viewIndex, 1);
+			}
 		},
 
 		createNewMeaningInput: function(meaning) {
 			meaning = meaning || '';
 			var meaningView = new MeaningView({meaning: meaning});
 			this.$('.edit-meaning').append(meaningView.el);
-			meaningView.on("destroy", this.removeFromMeaningList, this);
+			this.listenTo(meaningView, 'destroy', this.removeFromMeaningList);
 			this.meaningViews.push(meaningView);
 
 			return meaningView;
@@ -82,18 +78,22 @@ define([
 				newMeaning += $meanings.eq(i).find('.stored-value').text() + ';';
 			}
 
-			this.wordModel.set('meaning', newMeaning).save();
+			this.model.set('meaning', newMeaning).save();
 
 			this.close();
 		},
 
 		close: function() {
-			this.$el.hide();
-			$('#dictionary').css({
-				'position': 'static'
+			// remove drag-arrange binding
+			this.$('.word-meaning').arrangeable('destroy');
+
+			// remove all meaning views
+			_.each(this.meaningViews, function(meaningView) {
+				typeof meaningView.close === "function" ? meaningView.close() : meaningView.remove();
 			});
-			$('html').removeClass('blurry');
-			window.scrollTo(0, savedScrollY);
+
+			this.remove();
+			app.trigger('edit:close');
 		}
 	});
 

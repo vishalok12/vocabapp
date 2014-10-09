@@ -3,11 +3,12 @@ define([
 	'backbone',
 	'views/add_word/meaning_view',
 	'templates'
+
 ], function ($, Backbone, MeaningView, JST) {
 	'use strict';
 
 	var AddWordView = Backbone.View.extend({
-		el: '#add-word',
+		id: 'add-word',
 
 		template: JST['app/scripts/templates/add_word.ejs'],
 
@@ -19,15 +20,15 @@ define([
 			'click .new-meaning-btn': "createEmptyMeaningInput"
 		},
 
-		initialize: function() {
-			this.render();
+		initialize: function(options) {
+			this.render(options);
 			this.$meaningList = this.$('#meaning-list');
 			this.$synonyms = this.$('#synonyms');
 			this.$wordInput = this.$('#name');
 		},
 
-		render: function() {
-			this.$el.html( this.template() );
+		render: function(options) {
+			this.$el.html( this.template(options) );
 
 			return this;
 		},
@@ -79,7 +80,7 @@ define([
 				return;
 			}
 
-			app.dictionaryView.collections.create({
+			app.trigger('addword', {
 				name: wordName,
 				meaning: meaning,
 				synonyms: synonyms
@@ -132,7 +133,7 @@ define([
 			meaning = meaning || '';
 			var meaningView = new MeaningView({meaning: meaning});
 			this.$meaningList.append(meaningView.el);
-			meaningView.on("destroy", this.removeFromMeaningList, this);
+			this.listenTo(meaningView, 'destroy', this.removeFromMeaningList);
 			this.meaningViews.push(meaningView);
 
 			return meaningView;
@@ -148,6 +149,17 @@ define([
 
 			word = word.trim();
 			this.$wordInput.val(word);
+		},
+
+		close: function() {
+			this.$('.meaning-list-cont').perfectScrollbar('destroy');
+
+			// remove all child meaning views
+			_.each(this.meaningViews, function(meaningView) {
+				typeof meaningView.close === "function" ? meaningView.close() : meaningView.remove();
+			});
+
+			this.remove();
 		}
 	});
 

@@ -1,50 +1,52 @@
 /*global define*/
 
 define([
-    'jquery',
-    'backbone',
-    'templates'
+	'jquery',
+	'backbone',
+	'templates'
 ], function ($, Backbone, JST) {
-    'use strict';
+	'use strict';
 
-    var WordView = Backbone.View.extend({
-        el: '#notification',
+	var NotificationView = Backbone.View.extend({
+		template: JST['app/scripts/templates/notification.ejs'],
 
-        template: JST['app/scripts/templates/notification.ejs'],
+		events: {
+			'click .undo-action': "triggerUndo",
+		},
 
-        events: {
-            'click .undo-action': "undoAction",
-        },
+		initialize: function() {
+			this.listenTo(app, 'word:predelete', this.display);
+			this.listenTo(app, 'word:delete', this.hide);
 
-        render: function(text) {
-            //this.el is what we defined in tagName. use $el to get access to jQuery html() function
-            this.$el.html( this.template( {text: text} ) );
+			this.hide();
+		},
 
-            return this;
-        },
+		render: function(text) {
+			//this.el is what we defined in tagName. use $el to get access to jQuery html() function
+			this.$el.html( this.template( {text: text} ) );
 
-        undoAction: function() {
-            console.log('trigger undo');
-            this.trigger('undo:delete');
-            this.hide();
-            clearTimeout(this.hideTimeoutId);
-        },
+			return this;
+		},
 
-        display: function(text, period) {
-            var that = this;
-            this.render(text);
+		triggerUndo: function() {
+			app.trigger('notification:undo');
 
-            this.$el.show();
-            this.hideTimeoutId = setTimeout(function() {
-                that.hide();
-            }, period);
-        },
+			this.hide();
+		},
 
-        hide: function() {
-            this.$el.hide();
-        }
+		display: function(text) {
+			text = text ? text.slice(0,1).toUpperCase() + text.slice(1).toLowerCase() : '';
+			var that = this;
+			this.render('Deleting ' + text);
 
-    });
+			this.$el.show();
+		},
 
-    return WordView;
+		hide: function() {
+			this.$el.hide();
+		}
+
+	});
+
+	return NotificationView;
 });

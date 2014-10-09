@@ -8,6 +8,8 @@ define([
 	'use strict';
 
 	var GameView = Backbone.View.extend({
+		id: 'game-wrapper',
+
 		template: JST['app/scripts/templates/loop_game.ejs'],
 
 		events: {
@@ -41,8 +43,6 @@ define([
 			this.$gameButtons = this.$el.find('.game-option');
 			this.$nextButton = this.$el.find('#lg-next');
 			this.$overlay = this.$('.overlay');
-
-			hideOtherContainers();
 		},
 
 		render: function() {
@@ -108,6 +108,14 @@ define([
 			} else {
 				return this.canAnswer;
 			}
+		},
+
+		close: function() {
+			if (this.wordView) {
+				this.wordView.close();
+			}
+
+			this.remove();
 		}
 
 	});
@@ -122,12 +130,6 @@ define([
 				alert('game finished');
 			}
 		}
-	}
-
-	function hideOtherContainers() {
-		$('#wrapper').hide();
-		$('#game-wrapper').show();
-		app.navBarView.hideSearchBar();
 	}
 
 	return GameView;

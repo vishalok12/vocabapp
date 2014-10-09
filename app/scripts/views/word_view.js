@@ -8,6 +8,8 @@ define([
 ], function ($, Backbone, JST) {
 	'use strict';
 
+	var DELETE_TIME_GAP = 5000;
+
 	var WordView = Backbone.View.extend({
 		tagName: 'section',
 		className: 'word-card',
@@ -24,33 +26,35 @@ define([
 		},
 
 		initialize: function() {
-			console.log('initialize for model', this.model.get('name'));
-			// this.listenTo(this.model, "add", this.render);
 			this.listenTo(this.model, "change", this.render);
-			this.listenTo(app.notificationView, "undo:delete", this.cancelDeleteAction);
+			this.listenTo(this.model, "change:remembered", this.remove);
 			this.audio = new Audio();
-			this.deleteNotificationPeriod = 5000;
-			// this.listenTo(this.model, "remove", this.remove);
+
+			var that = this;
+			app.once("word:append", function() {
+				that.afterAppend()
+			});
 		},
 
 		render: function() {
-			//this.el is what we defined in tagName. use $el to get access to jQuery html() function
-			this.$el.html( this.template( this.model.toJSON() ) )
-							.toggleClass('hide', this.isHidden());
+			this.$el.html( this.template( this.model.toJSON() ) );
 
 			return this;
 		},
 
 		showDeleteNotification: function() {
-			console.log('show notification for undo action!!');
-			app.notificationView.display('Deleted...', this.deleteNotificationPeriod);
+			// trigger word before delete event
 
+			app.trigger('word:predelete', this.model.get('name'));
 			var that = this;
 
 			this.deleteTimeoutId = setTimeout(function() {
-				console.log('finally deleting word...');
+				app.trigger('word:delete', that.model.get('name'));
 				that.deleteWord();
-			}, this.deleteNotificationPeriod);
+
+			}, DELETE_TIME_GAP);
+
+			this.listenTo(app, 'notification:undo', this.cancelDeleteAction);
 
 			this.$el.addClass('hide');
 
@@ -58,6 +62,9 @@ define([
 		},
 
 		cancelDeleteAction: function() {
+			// unbind notification event binding
+			this.stopListening(app, 'notification:undo');
+
 			if (this.deleteTimeoutId) {
 				clearTimeout(this.deleteTimeoutId);
 				this.deleteTimeoutId = null;
@@ -71,7 +78,13 @@ define([
 		},
 
 		close: function() {
+			// remove binding if any
 			this.stopListening();
+
+			// destroy perfect-scrollbar bindings
+			this.$('.meaning').perfectScrollbar('destroy');
+
+			this.remove();
 		},
 
 		toggleRemembered: function() {
@@ -89,13 +102,6 @@ define([
 			this.audio.play();
 
 			return false;
-		},
-
-		isHidden: function() {
-			if (app.wordType === 'all') { return false; }
-			var remembered = this.model.get('remembered');
-			return (remembered && app.wordType !== "remembered") ||
-				(!remembered && app.wordType === "remembered");
 		},
 
 		flip: function() {
@@ -151,7 +157,7 @@ define([
 		},
 
 		afterAppend: function() {
-			this.$el.find('.meaning').perfectScrollbar({
+			this.$('.meaning').perfectScrollbar({
 				wheelSpeed: 20,
 				wheelPropagation: true,
 				suppressScrollX: true
@@ -159,7 +165,8 @@ define([
 		},
 
 		edit: function() {
-			app.dictionaryView.editWord(this.model);
+			// trigger word edit event
+			app.trigger('word:edit', this.model);
 
 			return false;
 		}
