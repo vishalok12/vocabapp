@@ -17,7 +17,6 @@ define([
 		initialize: function() {
 			this.render();
 			this.$target = this.$el.find('#navbar-collapse-1');
-			this.$search = this.$('#nav-search');
 		},
 
 		render: function() {

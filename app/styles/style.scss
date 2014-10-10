@@ -44,6 +44,7 @@ body {
 	height: 100%;
 	font-family: ubuntu;
 	margin: 0;
+	margin-top: 51px;
 	-webkit-user-select: none;
 	user-select: none;
 }
@@ -234,7 +235,7 @@ ul {
 #edit-word {
 	display: block;
 	width: 100%;
-	min-height: 100%;
+	min-height: 115%;
 	text-align: center;
 	position: absolute;
 	left: 0;
@@ -677,7 +678,7 @@ ul {
 
 	#add-word {
 		width: $cardMaxWidth;
-		margin: 50px auto 0;
+		margin: 0 auto;
 	}
 }
 
@@ -705,7 +706,6 @@ ul {
 	}
 
 	#add-word {
-		width: $cardMaxWidth;
 		margin: 0 auto;
 	}
 

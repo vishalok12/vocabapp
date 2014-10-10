@@ -34,7 +34,7 @@ define([
 
 				this.navBarView.highlight(routeEvent)
 
-				if (routeEvent === 'addWord') {
+				if (routeEvent === 'addWord' || routeEvent === 'playGame') {
 					// hide search view
 					$('#search-container').hide();
 				} else {
@@ -69,9 +69,12 @@ define([
 			var savedScrollY;
 			// event bindings
 			app.on('word:edit', function(wordModel) {
+				// save scroll value
+				savedScrollY = $(window).scrollTop();
+
 				// disable parent view from scroll
-				$('#dictionary').css({
-					'position': 'fixed'
+				$('#wrapper').css({
+					'overflow': 'hidden'
 				});
 				$('html').addClass('blurry');
 
@@ -79,15 +82,13 @@ define([
 					model: wordModel
 				});
 
-				// save scroll value
-				savedScrollY = $(window).scrollTop();
-
 				$('#wrapper').append(editWordView.$el);
+				window.scrollTo(0,0);
 			});
 
 			app.on('edit:close', function() {
-				$('#dictionary').css({
-					'position': 'static'
+				$('#wrapper').css({
+					'overflow': 'inherit'
 				});
 				$('html').removeClass('blurry');
 				window.scrollTo(0, savedScrollY);
