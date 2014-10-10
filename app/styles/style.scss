@@ -172,6 +172,11 @@ ul {
 		right: 57px;
 		border: 1px solid $fern;
 		color: $fern;
+
+		&.checked {
+			background: rgb(102, 175, 92);
+			color: $mint-green;
+		}
 	}
 	.rotate {
 		position: absolute;
