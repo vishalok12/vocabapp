@@ -95,7 +95,7 @@ define([
 			});
 
 			app.on('addword', function(word) {
-				dictionaryCollection.create(word);
+				that.dictionaryCollection.create(word);
 			});
 
 			app.on('search:words', function(words, searchKey) {
