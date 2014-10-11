@@ -34,7 +34,7 @@ app.configure( function() {
 	//perform route lookup based on url and HTTP method
 	app.use( app.router );
 
-	// app.set('views', __dirname + '/views');
+	app.set('views', __dirname + '/server/templates');
 	app.engine('html', require('ejs').renderFile);
 
 	if(app.get('env') == "development") {
@@ -51,12 +51,31 @@ app.configure( function() {
 		app.use( express.static( path.join( application_root, 'dist') ) );
 	}
 
+	app.use(function( request, response ) {
+		// var currentDirPath = application_root + '/' + appDirectory;
+		if (!request.isAuthenticated()) {
+			return response.render('homepage.html');
+		} else {
+			// get the word list
+			getWordsForUser(request.user._id, function(error, words) {
+				if (error) {
+					// 500 error
+					return next(error);
+				} else {
+					return response.render('index.html', {
+						dictionaryWords: words
+					});
+				}
+			});
+		}
+	});
+
 	if (app.get('env') == "development") {
 		// for 404 errors
 		app.use(function(request, response) {
 			// check if request accepts html
 			if (request.accepts('html')) {
-				response.send(404, application_root + '/app/404.html');
+				response.send(404, '404.html');
 				return;
 			}
 
@@ -77,7 +96,8 @@ app.configure( function() {
 
 	if (app.get('env') == "production") {
 		app.use(function(request, response) {
-			response.render(application_root + '/dist/404.html');
+			response.send(404, '404.html');
+			return;
 		});
 
 		app.use( express.errorHandler());
@@ -121,25 +141,6 @@ passport.use(new LocalStrategy(
 ));
 
 // Routes
-app.get('/', function( request, response ) {
-	var currentDirPath = application_root + '/' + appDirectory;
-	if (!request.isAuthenticated()) {
-		return response.render(currentDirPath + '/homepage.html');
-	} else {
-		// get the word list
-		getWordsForUser(request.user._id, function(error, words) {
-			if (error) {
-				// 500 error
-				return next(error);
-			} else {
-				return response.render(currentDirPath + '/index.html', {
-					dictionaryWords: words
-				});
-			}
-		});
-	}
-});
-
 app.all('/api/*', function(request, response, next) {
 	if (request.isAuthenticated()) {
 		next();
@@ -153,7 +154,7 @@ app.get('/login', function(request, response) {
 		return response.redirect('/');
 	}
 
-	response.render(application_root + '/' + appDirectory + '/signin.html');
+	response.render('signin.html');
 });
 
 app.get('/logout', function(request, response) {

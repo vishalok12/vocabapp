@@ -37,7 +37,7 @@ define([
 		display: function(text) {
 			text = text ? text.slice(0,1).toUpperCase() + text.slice(1).toLowerCase() : '';
 			var that = this;
-			this.render('Deleting ' + text);
+			this.render('Deleted ' + '<span style="color:rgb(192, 27, 27);">' + text + '</span>');
 
 			this.$el.show();
 		},

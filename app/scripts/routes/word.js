@@ -32,7 +32,7 @@ define([
 			this.on('route', function(routeEvent) {
 				app.trigger('page:change');
 
-				this.navBarView.highlight(routeEvent)
+				this.navBarView.highlight(routeEvent);
 
 				if (routeEvent === 'addWord' || routeEvent === 'playGame') {
 					// hide search view
@@ -126,6 +126,36 @@ define([
 					$('#wrapper').append(addWordSuggestionView.$el);
 				}
 			});
+
+			app.on('nav', function(pageType) {
+				pageType = pageType.toLowerCase();
+
+				switch(pageType) {
+					case 'unremembered':
+						that.showUnRemembered();
+						that.navigate('/');
+						break;
+
+					case 'remembered':
+						that.showRemembered();
+						that.navigate('/remembered');
+						break;
+
+					case 'all':
+						that.showAll();
+						that.navigate('/all');
+						break;
+
+					case 'add word':
+						that.addWord();
+						that.navigate('/addword');
+						break;
+
+					case 'loop':
+						that.playGame();
+						that.navigate('/play/loop');
+				}
+			});
 		},
 
 		showUnRemembered: function() {
@@ -202,7 +232,7 @@ define([
 
 			new NotificationView({el: '#notification'});
 
-			Backbone.history.start();
+			Backbone.history.start({ pushState: true });
 		}
 
 	});

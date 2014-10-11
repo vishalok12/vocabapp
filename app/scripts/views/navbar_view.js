@@ -26,14 +26,16 @@ define([
 		},
 
 		makeCurrent: function(e) {
+			e.preventDefault();
 			this.$el.find('.menu').removeClass('active');
 			$(e.currentTarget).addClass('active');
 			this.$target.collapse('hide');
+			app.trigger('nav', this.$(e.currentTarget).find('a').text());
+
 			_gaq.push(['_trackEvent', 'Navigation', 'click', e.currentTarget.textContent]);
 		},
 
 		highlight: function(nav) {
-			console.log(nav);
 			this.$('.menu').removeClass('active');
 			switch(nav) {
 				case 'showUnRemembered':
