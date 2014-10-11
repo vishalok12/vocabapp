@@ -30,10 +30,7 @@ html {
 	padding: 0;
 
 	&.blurry {
-		#navigation {
-			@extend blurry;
-		}
-		#dictionary {
+		#navigation, #dictionary, #search-container {
 			@extend blurry;
 		}
 	}
