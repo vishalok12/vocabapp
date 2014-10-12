@@ -34,7 +34,11 @@ app.configure( function() {
 	//perform route lookup based on url and HTTP method
 	app.use( app.router );
 
-	app.set('views', __dirname + '/server/templates');
+	if (app.get('env') === 'production') {
+		app.set('views', __dirname + '/server-dist/templates');
+	} else {
+		app.set('views', __dirname + '/server/templates');
+	}
 	app.engine('html', require('ejs').renderFile);
 
 	if(app.get('env') == "development") {

@@ -11,7 +11,7 @@ define([
 		template: JST['app/scripts/templates/navbar.ejs'],
 
 		events: {
-			'click .menu:not(".dropdown")': "makeCurrent"
+			'click .menu:not(".dropdown,.logout")': "makeCurrent"
 		},
 
 		initialize: function() {
@@ -26,6 +26,7 @@ define([
 		},
 
 		makeCurrent: function(e) {
+
 			e.preventDefault();
 			this.$el.find('.menu').removeClass('active');
 			$(e.currentTarget).addClass('active');
