@@ -6,7 +6,7 @@ var application_root = __dirname,
 	express = require( 'express' ), //Web framework
 	path = require( 'path' ), //Utilities for dealing with file paths
 	mongoose = require( 'mongoose' ), //MongoDB integration
-	http = require('http'),
+	https = require('https'),
 	qs = require('querystring'),
 	passport = require('passport'),
 	LocalStrategy = require('passport-local').Strategy,
@@ -316,11 +316,15 @@ app.delete('/api/words/:id', function( request, response, next ) {
 app.get('/api/meaning', function(request, response, next) {
 	var phrase = request.query.phrase;
 
-	http.get(
-		'http://glosbe.com/gapi/translate?from=eng&dest=eng&format=json&phrase=' +
+	console.log('Getting meaning for phrase:', phrase);
+
+	https.get(
+		'https://glosbe.com/gapi/translate?from=eng&dest=eng&format=json&phrase=' +
 		phrase + '&pretty=true',
 		function(res) {
 			var str = '';
+
+			console.log('response for meaning came with status code', res.statusCode);
 			if (res.statusCode === 200) {
 				res.on('data', function(chunk){
 					//do something with chunk
