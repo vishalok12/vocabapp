@@ -198,6 +198,20 @@ ul {
 		height: 100%;
 	}
 
+	.bogus-button-cont {
+		position: absolute;
+		width: 100%;
+		top: 200px;
+		left: 0;
+
+		.bogus-button {
+			display: inline-block;
+			padding: 10px 20px;
+			border: 1px solid $fern;
+			color: $scorpion;
+		}
+	}
+
 	.back-face {
 		cursor: auto;
 	}
