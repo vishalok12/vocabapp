@@ -174,13 +174,13 @@ module.exports = function (grunt) {
             }
         },
         useminPrepare: {
-            html: '<%= yeoman.app %>/*.html',
+            html: 'server/*.html',
             options: {
                 dest: '<%= yeoman.dist %>'
             }
         },
         usemin: {
-            html: ['<%= yeoman.dist %>/{,*/}*.html'],
+            html: ['server-dist/templates/{,*/}*.html'],
             css: ['<%= yeoman.dist %>/styles/{,*/}*.css'],
             options: {
                 dirs: ['<%= yeoman.dist %>']
@@ -221,9 +221,9 @@ module.exports = function (grunt) {
                 },
                 files: [{
                     expand: true,
-                    cwd: '<%= yeoman.app %>',
+                    cwd: 'server',
                     src: '*.html',
-                    dest: '<%= yeoman.dist %>'
+                    dest: 'server-dist/templates'
                 }]
             }
         },
