@@ -58,7 +58,11 @@ app.configure( function() {
 	app.use(function( request, response ) {
 		// var currentDirPath = application_root + '/' + appDirectory;
 		if (!request.isAuthenticated()) {
-			return response.render('homepage.html');
+			if (request.url === '/') {
+				return response.render('homepage.html');
+			} else {
+				response.redirect('/');
+			}
 		} else {
 			// get the word list
 			getWordsForUser(request.user._id, function(error, words) {
