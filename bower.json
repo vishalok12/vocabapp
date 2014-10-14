@@ -9,7 +9,7 @@
     "requirejs": "~2.1.10",
     "requirejs-text": "~2.0.10",
     "fontawesome": "~4.1.0",
-    "jquery-dragarrange": "git://github.com/vishalok12/jquery-dragarrange.git"
+    "jquery-dragarrange": "~0.2.0"
   },
   "devDependencies": {}
 }
