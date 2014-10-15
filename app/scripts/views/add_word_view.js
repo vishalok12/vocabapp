@@ -174,17 +174,25 @@ define([
 
 			if (data && data.result == "ok" && data.tuc) {
 				meanings = _.pluck(
-					_.flatten(
-						_.filter(
-							_.pluck(data.tuc, 'meanings'), function(m) { return m; }
-						)
+					_.uniq(
+						_.flatten(
+							_.filter(
+								_.pluck(data.tuc, 'meanings'), function(m) { return m; }
+							)
+						),
+						false,
+						function(meaning) {	// to remove duplicate meanings
+							return meaning.text ? meaning.text.replace('.', '').trim() : '';
+						}
 					).slice(0,4),
 					'text'
 				);
 				synonyms = _.pluck(
-					_.flatten(
-						_.filter(
-							_.pluck(data.tuc, 'phrase'), function(p) { return p; }
+					_.uniq(
+						_.flatten(
+							_.filter(
+								_.pluck(data.tuc, 'phrase'), function(p) { return p; }
+							)
 						)
 					).slice(0,3),
 					'text'
