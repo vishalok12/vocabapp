@@ -28,11 +28,12 @@ define([
 		initialize: function() {
 			this.listenTo(this.model, "change", this.update);
 			this.listenTo(this.model, "change:remembered", this.remove);
+			this.listenTo(this.model, "error", this.notifyErrorToApp);
 			this.audio = new Audio();
 
 			var that = this;
 			app.once("word:append", function() {
-				that.afterAppend()
+				that.afterAppend();
 			});
 		},
 
@@ -45,6 +46,10 @@ define([
 		update: function() {
 			this.render();
 			this.afterAppend();
+		},
+
+		notifyErrorToApp: function(model, error) {
+			app.trigger('word:error', error);
 		},
 
 		showDeleteNotification: function() {
