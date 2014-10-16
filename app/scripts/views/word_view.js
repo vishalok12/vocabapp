@@ -26,7 +26,7 @@ define([
 		},
 
 		initialize: function() {
-			this.listenTo(this.model, "change", this.render);
+			this.listenTo(this.model, "change", this.update);
 			this.listenTo(this.model, "change:remembered", this.remove);
 			this.audio = new Audio();
 
@@ -40,6 +40,11 @@ define([
 			this.$el.html( this.template( this.model.toJSON() ) );
 
 			return this;
+		},
+
+		update: function() {
+			this.render();
+			this.afterAppend();
 		},
 
 		showDeleteNotification: function() {
