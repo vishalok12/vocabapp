@@ -98,6 +98,14 @@ define([
 				that.dictionaryCollection.create(word);
 			});
 
+			app.on('unauthorised', function(e) {
+				if (e.status === 401) {
+					// TODO: show notification, if not logged in before redirecting
+					// unauthorised access, go to login page
+					window.location = '/';
+				}
+			});
+
 			app.on('search:words', function(words, searchKey) {
 				if (words.length) {
 					var searchWordCollection = new DictionaryCollection(

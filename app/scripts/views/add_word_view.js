@@ -202,8 +202,13 @@ define([
 				synonyms = [];
 			}
 			callback(meanings, synonyms);
-		}).fail(function() {
-			callback([], []);
+		}).fail(function(e) {
+			if (e.status === 401) {	// un-authorised access
+				// notify app about the error
+				app.trigger('unauthorised', e);
+			} else {
+				callback([], []);
+			}
 		});
 	}
 
