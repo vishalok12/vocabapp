@@ -182,7 +182,7 @@ define([
 						),
 						false,
 						function(meaning) {	// to remove duplicate meanings
-							return meaning.text ? meaning.text.replace('.', '').trim() : '';
+							return meaning.text ? meaning.text.replace('.', '').trim().toLowerCase() : '';
 						}
 					).slice(0,4),
 					'text'
