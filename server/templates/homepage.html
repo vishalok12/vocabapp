@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
 
-    <title>Vocab Tree</title>
+    <title>WordTray</title>
 
     <script type="text/javascript">
 
@@ -20,10 +20,27 @@
     <link rel="stylesheet" href="bower_components/sass-bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="bower_components/fontawesome/css/font-awesome.css">
     <link rel="stylesheet" href="styles/landing-page.css" type="text/css" media="screen">
-    <link rel="stylesheet" href="styles/lib/perfect-scrollbar.css" type="text/css" media="screen">
     <!-- endbuild -->
   </head>
   <body>
+  	<script>
+  	  window.fbAsyncInit = function() {
+  	    FB.init({
+  	      appId      : '1507910726123739',
+  	      xfbml      : true,
+  	      version    : 'v2.1'
+  	    });
+  	  };
+
+  	  (function(d, s, id){
+  	     var js, fjs = d.getElementsByTagName(s)[0];
+  	     if (d.getElementById(id)) {return;}
+  	     js = d.createElement(s); js.id = id;
+  	     js.src = "//connect.facebook.net/en_US/sdk.js";
+  	     fjs.parentNode.insertBefore(js, fjs);
+  	   }(document, 'script', 'facebook-jssdk'));
+  	</script>
+  	
     <section class="intro container">
       <div class="intro-menu row">
 
@@ -45,30 +62,37 @@
 
         </div>
 
+        <a href="/auth/facebook" class="btn signup-btn-facebook">
+        	<span class="logo">
+        		<i class="fa fa-facebook"></i>
+        	</span>
+        	<span class="text">Sign Up with Facebook</span>
+        </a>
+
         <div class="signup-form">
           <form id="reg" method="post" name="reg" action="/signup">
             <div class="form-group row">
               <div class="col-xs-12">
-              	<input class="form-control" type="text" name="firstName" placeholder="First Name" required>
+              	<input class="form-input form-control" type="text" name="firstName" placeholder="First Name" required>
               </div>
             </div>
             <div class="form-group row">
               <div class="col-xs-12">
-              	<input class="form-control" type="text" name="lastName" placeholder="Last Name" required>
+              	<input class="form-input form-control" type="text" name="lastName" placeholder="Last Name" required>
               </div>
             </div>
             <div class="form-group row">
               <div class="col-xs-12">
-              	<input class="form-control" type="email" name="email" placeholder="Your Email" required>
+              	<input class="form-input form-control" type="email" name="signup_email" placeholder="Your Email" required>
               </div>
             </div>
             <div class="form-group row">
               <div class="col-xs-12">
-                <input type="password" name="password" class="form-control" placeholder="Password" required>
+                <input type="password" name="signup_password" class="form-input form-control" placeholder="Password" required>
               </div>
             </div>
             <div class="form-group">
-              <button type="submit" class="btn btn-block btn-info">Sign Up</button>
+              <button type="submit" class="btn btn-block btn-info signup-btn">Sign Up</button>
             </div>
           </form>
 

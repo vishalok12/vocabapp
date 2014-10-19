@@ -10,7 +10,8 @@
     "newrelic": "^1.11.2",
     "passport": "^0.2.1",
     "passport-local": "^1.0.0",
-    "morgan": "^1.3.2"
+    "morgan": "^1.3.2",
+    "passport-facebook": "^1.0.3"
   },
   "devDependencies": {
     "grunt": "~0.4.1",

@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
-		<title>Welcome To VocabTree</title>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+
+    <title>WordTray</title>
 
 		<script type="text/javascript">
 
@@ -14,32 +15,96 @@
 
 		</script>
 
-		<!-- build:css({app,.tmp}) styles/signin.css -->
-		<link rel="stylesheet" href="bower_components/sass-bootstrap/dist/css/bootstrap.css">
-		<link rel="stylesheet" href="styles/signin.css" type="text/css" media="screen">
-		<!-- endbuild -->
-	</head>
-	<body>
-		<div class="sign-in">
-			<form id="signin-form" method="post" name="signin" action="/session">
-				<div class="input-wrapper">
-					<input id="signin-email" type="text" name="username" placeholder="Email" autofocus="autofocus" required class="inputtext">
-				</div>
-				<div class="input-wrapper">
-					<input id="signin-password" type="password" name="password" placeholder="Password" required class="inputtext">
-				</div>
-				<div class="input-wrapper">
-					<button id="signin-btn" type="submit" class="btn">Sign in</button>
-				</div>
-			</form>
-		</div>
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+    <!-- build:css({app,.tmp}) styles/homepage.css -->
+    <link rel="stylesheet" href="bower_components/sass-bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="bower_components/fontawesome/css/font-awesome.css">
+    <link rel="stylesheet" href="styles/landing-page.css" type="text/css" media="screen">
+    <!-- endbuild -->
+  </head>
+  <body id="login-page">
+  	<script>
+  	  window.fbAsyncInit = function() {
+  	    FB.init({
+  	      appId      : '1507910726123739',
+  	      xfbml      : true,
+  	      version    : 'v2.1'
+  	    });
+  	  };
 
-		<script type="text/javascript">
-			(function() {
-				var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-			})();
-		</script>
-	</body>
+  	  (function(d, s, id){
+  	     var js, fjs = d.getElementsByTagName(s)[0];
+  	     if (d.getElementById(id)) {return;}
+  	     js = d.createElement(s); js.id = id;
+  	     js.src = "//connect.facebook.net/en_US/sdk.js";
+  	     fjs.parentNode.insertBefore(js, fjs);
+  	   }(document, 'script', 'facebook-jssdk'));
+  	</script>
+  	
+    <section class="login-container">
+		  <a href="/auth/facebook" class="btn signup-btn-facebook">
+	    	<span class="logo">
+	    		<i class="fa fa-facebook"></i>
+	    	</span>
+	    	<span class="text">Login with Facebook</span>
+	    </a>
+
+	    <div class="signup-divider">or</div>
+
+    	<div class="sign-in">
+    		<form id="signin-form" method="post" name="signin" action="/session">
+    			<div class="form-group row">
+    			  <div class="col-xs-12">
+    			  	<input id="signin-email" type="text" name="username" placeholder="Email" autofocus="autofocus"  class="form-input form-control" required>
+    			  </div>
+    			</div>
+    			<div class="form-group row">
+    			  <div class="col-xs-12">
+    			  	<input id="signin-password" class="form-input form-control" type="password" name="password" placeholder="Password" required>
+    			  </div>
+    			</div>
+    			<div class="form-group">
+    			  <button id="signin-btn" type="submit" class="btn btn-block btn-info signup-btn">Log In</button>
+    			</div>
+    		</form>
+    	</div>
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+        <nav class="footer-links">
+          <ul>
+            <li class="active">
+              <a href="#">Home</a>
+            </li>
+            <li>
+              <a href="#">About</a>
+            </li>
+            <li>
+              <a href="#">Blog</a>
+            </li>
+            <li>
+              <a href="#">Contact</a>
+            </li>
+          </ul>
+        </nav>
+        <div class="social-btns">
+          <a href="https://www.facebook.com/wordtray" class="social-btn btn-facebook" rel="publisher"><i class="fa fa-facebook"></i></a>
+          <a href="https://twitter.com/word_tray" class="social-btn btn-twitter" rel="publisher"><i class="fa fa-twitter"></i></a>
+          <a href="https://plus.google.com/113720652947983497661" class="social-btn btn-google-plus" rel="publisher"><i class="fa fa-google-plus"></i></a>
+        </div>
+        <div class="additional-links">
+          Created by <a href="http://twitter.com/vishalok12">Vishal Kumar</a>
+        </div>
+      </div>
+    </footer>
+
+    <script type="text/javascript">
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
 </html>

@@ -10,6 +10,7 @@ var application_root = __dirname,
 	qs = require('querystring'),
 	passport = require('passport'),
 	LocalStrategy = require('passport-local').Strategy,
+	FacebookStrategy = require('passport-facebook').Strategy,
 	morgan = require('morgan');
 
 //Create server
@@ -64,6 +65,7 @@ app.configure( function() {
 				response.redirect('/');
 			}
 		} else {
+			console.log('user id', request.user._id);
 			// get the word list
 			getWordsForUser(request.user._id, function(error, words) {
 				if (error) {
@@ -122,6 +124,65 @@ passport.deserializeUser(function(id, done) {
 	});
 });
 
+var FACEBOOK_APP_ID = '1507910726123739';
+var FACEBOOK_APP_SECRET = 'd1a25c8b02d4c7e426f02b1e522f1445';
+
+passport.use(new FacebookStrategy({
+		clientID: FACEBOOK_APP_ID,
+		clientSecret: FACEBOOK_APP_SECRET,
+		callbackURL: "http://localhost:9000/auth/facebook/callback",
+		scope: ['email']
+	},
+	function(accessToken, refreshToken, profile, done) {
+		console.log('profile', profile);
+		var data = profile._json;
+
+		UserModel.findOne( {auth_id: data.id}, function(err, oldUser) {
+			if (err) {
+				next(err);
+			} else {
+				if (oldUser) {
+					// user already exist!!
+
+					console.log('User email already exists!!');
+					return done(null, oldUser);
+				}
+
+				var user = new UserModel({
+					first_name: data.first_name,
+					last_name: data.last_name,
+					auth_id: data.id,
+					email: data.email
+				});
+
+				user.save(function( err, user ) {
+
+					if( !err ) {
+							afterSignup(user._id, function() {
+								return done(null, user);
+							});
+					} else {
+						next(err);
+					}
+				});
+			}
+		});
+	}
+));
+
+// Redirect the user to Facebook for authentication.  When complete,
+// Facebook will redirect the user back to the application at
+//     /auth/facebook/callback
+app.get('/auth/facebook', passport.authenticate('facebook'));
+
+// Facebook will redirect the user to this URL after approval.  Finish the
+// authentication process by attempting to obtain an access token.  If
+// access was granted, the user will be logged in.  Otherwise,
+// authentication has failed.
+app.get('/auth/facebook/callback',
+  passport.authenticate('facebook', { successRedirect: '/',
+                                      failureRedirect: '/login' }));
+
 passport.use(new LocalStrategy(
 	function(username, password, done) {
 		console.log('username', username);
@@ -172,8 +233,8 @@ app.get('/logout', function(request, response) {
 
 // signup
 app.post('/signup', function(request, response, next) {
-	var email = request.body.email.trim();
-	var password = request.body.password;
+	var email = request.body.signup_email.trim();
+	var password = request.body.signup_password;
 	var firstName = request.body.firstName.trim();
 	var lastName = request.body.lastName.trim();
 
@@ -202,9 +263,11 @@ app.post('/signup', function(request, response, next) {
 					request.login(user, function(error) {
 						if (error) { return next(error); }
 
-						afterSignup(user._id);
+						afterSignup(user._id, function() {
+							return response.redirect('/');
+						});
 
-						return response.redirect('/');
+						return;
 					});
 
 				} else {
@@ -241,6 +304,7 @@ var Word = new mongoose.Schema({
 var User = new mongoose.Schema({
 	first_name: String,
 	last_name: String,
+	auth_id: String,
 	email: String,
 	password: String
 });
@@ -345,7 +409,7 @@ app.get('/api/meaning', function(request, response, next) {
 	);
 });
 
-function afterSignup(userId) {
+function afterSignup(userId, callback) {
 	// create a sample word
 	var word = new WordModel({
 		name: 'Sample',
@@ -359,6 +423,10 @@ function afterSignup(userId) {
 	word.save( function( error ) {
 		if( error ) {
 			console.log( 'Error occurred in creating sample word' );
+		} else {
+			if (typeof callback === "function") {
+				callback();
+			}
 		}
 	});
 }
