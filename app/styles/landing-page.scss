@@ -46,7 +46,7 @@ body {
 
 .signup-form {
 		max-width: 300px;
-		margin: 50px auto 0;
+		margin: 0 auto;
 }
 
 .signup-btn {
@@ -175,6 +175,11 @@ a {
 	text-align: center;
 }
 
+.signup-divider {
+	color: rgb(255, 255, 255);
+	margin: 24px 0;
+}
+
 #login-page {
 	.footer {
 		position: absolute;
@@ -192,8 +197,4 @@ a {
 		margin-top: 0;
 	}
 
-	.signup-divider {
-		color: rgb(255, 255, 255);
-		margin: 24px 0;
-	}
 }
