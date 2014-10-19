@@ -125,7 +125,7 @@ passport.deserializeUser(function(id, done) {
 });
 
 var FACEBOOK_APP_ID = process.env.FACEBOOK_APP_ID || '1507910726123739';
-var FACEBOOK_APP_SECRET = process.env.FACEBOOK_APP_SECRET;
+var FACEBOOK_APP_SECRET = process.env.FACEBOOK_APP_SECRET || 'secret-should-not-be-disclosed';
 var WEBSITE_URL = (app.get('env') === "production") ? "www.wordtray.com" : "localhost:9000";
 
 passport.use(new FacebookStrategy({
