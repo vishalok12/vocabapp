@@ -124,13 +124,14 @@ passport.deserializeUser(function(id, done) {
 	});
 });
 
-var FACEBOOK_APP_ID = '1507910726123739';
-var FACEBOOK_APP_SECRET = 'd1a25c8b02d4c7e426f02b1e522f1445';
+var FACEBOOK_APP_ID = process.env.FACEBOOK_APP_ID || '1507910726123739';
+var FACEBOOK_APP_SECRET = process.env.FACEBOOK_APP_SECRET;
+var WEBSITE_URL = (app.get('env') === "production") ? "www.wordtray.com" : "localhost:9000";
 
 passport.use(new FacebookStrategy({
 		clientID: FACEBOOK_APP_ID,
 		clientSecret: FACEBOOK_APP_SECRET,
-		callbackURL: "http://localhost:9000/auth/facebook/callback",
+		callbackURL: "http://" + WEBSITE_URL + "/auth/facebook/callback",
 		scope: ['email']
 	},
 	function(accessToken, refreshToken, profile, done) {
