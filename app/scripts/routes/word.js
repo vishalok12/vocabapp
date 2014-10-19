@@ -27,21 +27,6 @@ define([
 		},
 
 		initialize: function(route) {
-			// bind event for all routes
-			// methods, which will be called on every page change
-			this.on('route', function(routeEvent) {
-				app.trigger('page:change');
-
-				this.navBarView.highlight(routeEvent);
-
-				if (routeEvent === 'addWord' || routeEvent === 'playGame') {
-					// hide search view
-					$('#search-container').hide();
-				} else {
-					// show search view
-					$('#search-container').show();
-				}
-			});
 			var that = this;
 			window.app = _.extend({}, Backbone.Events);
 
@@ -135,7 +120,7 @@ define([
 				}
 			});
 
-			app.on('nav', function(pageType) {
+			app.on('nav', function(pageType, options) {
 				pageType = pageType.toLowerCase();
 
 				switch(pageType) {
@@ -155,14 +140,21 @@ define([
 						break;
 
 					case 'add word':
-						that.addWord();
-						that.navigate('/addword');
+						var word = options ? options.word : '';
+						that.addWord(word);
+						if (word) {
+							that.navigate('/addword/' + word);
+						} else {
+							that.navigate('/addword');
+						}
 						break;
 
 					case 'loop':
 						that.playGame();
 						that.navigate('/play/loop');
 				}
+
+				that.onRouteChange(pageType);
 			});
 		},
 
@@ -241,6 +233,18 @@ define([
 			new NotificationView({el: '#notification'});
 
 			Backbone.history.start({ pushState: true });
+		},
+
+		onRouteChange: function(routeEvent) {
+			app.trigger('page:change');
+
+			if (routeEvent === 'add word' || routeEvent === 'loop') {
+				// hide search view
+				$('#search-container').hide();
+			} else {
+				// show search view
+				$('#search-container').show();
+			}
 		}
 
 	});
