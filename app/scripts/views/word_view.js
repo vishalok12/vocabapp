@@ -27,7 +27,6 @@ define([
 
 		initialize: function() {
 			this.listenTo(this.model, "change", this.update);
-			this.listenTo(this.model, "change:remembered", this.remove);
 			this.listenTo(this.model, "error", this.notifyErrorToApp);
 			this.audio = new Audio();
 
@@ -84,7 +83,7 @@ define([
 
 		deleteWord: function() {
 			this.model.destroy();
-			this.remove();
+			this.close();
 		},
 
 		close: function() {
@@ -98,8 +97,13 @@ define([
 		},
 
 		toggleRemembered: function() {
-			this.model.save({
+			this.$el.hide();
+			this.model.set({
 				remembered: !this.model.get('remembered')
+			}).save({
+				success: function() {
+					this.close();
+				}
 			});
 			return false;
 		},
