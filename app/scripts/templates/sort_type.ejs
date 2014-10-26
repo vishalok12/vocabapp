@@ -1,0 +1,9 @@
+<select>
+	<% for (var sortType in sortTypes) { %>
+		<% if (sortType === selectedSortType) { %>
+			<option value="<%= sortType %>" selected> <%= sortTypes[sortType] %> </option>
+		<% } else { %>
+			<option value="<%= sortType %>"> <%= sortTypes[sortType] %> </option>
+		<% } %>
+	<% } %>
+</select>

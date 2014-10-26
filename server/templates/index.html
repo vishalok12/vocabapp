@@ -44,6 +44,7 @@
 		
 		<nav id="navigation" class="nav navbar-default" role="navigation">
 		</nav>
+		<div id="sort-container"></div>
 		<div id="search-container"></div>
 		<div id="wrapper">
 			<section id="notification" style="display: none;"></section>
@@ -55,6 +56,7 @@
 
 		<script>
 			window.dictionaryWords = <%- JSON.stringify(dictionaryWords) %>;
+			window.settings = <%- JSON.stringify(settings) %>;
 		</script>
 
 		<script type="text/javascript">

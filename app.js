@@ -69,13 +69,20 @@ app.configure( function() {
 			// get the word list
 			getWordsForUser(request.user._id, function(error, words) {
 				if (error) {
-					// 500 error
 					return next(error);
-				} else {
-					return response.render('index.html', {
-						dictionaryWords: words
-					});
 				}
+
+				getUserSettings(request.user._id, function(error, settings) {
+					if (error) {
+						// 500 error
+						return next(error);
+					} else {
+						return response.render('index.html', {
+							dictionaryWords: words,
+							settings: settings
+						});
+					}
+				});
 			});
 		}
 	});
@@ -149,11 +156,14 @@ passport.use(new FacebookStrategy({
 					return done(null, oldUser);
 				}
 
+				var currentTime = Date.now();
 				var user = new UserModel({
 					first_name: data.first_name,
 					last_name: data.last_name,
 					auth_id: data.id,
-					email: data.email
+					email: data.email,
+					created_at: currentTime,
+					updated_at: currentTime
 				});
 
 				user.save(function( err, user ) {
@@ -251,11 +261,14 @@ app.post('/signup', function(request, response, next) {
 				return response.redirect('/');
 			}
 
+			var currentTime = new Date();
 			var user = new UserModel({
 				first_name: firstName,
 				last_name: lastName,
 				email: email,
-				password: password
+				password: password,
+				created_at: currentTime,
+				updated_at: currentTime
 			});
 
 			user.save(function( err, user ) {
@@ -299,7 +312,9 @@ var Word = new mongoose.Schema({
 	meaning: String,
 	synonyms: String,
 	remembered: Boolean,
-	userId: String
+	userId: String,
+	created_at: Date,
+	updated_at: Date
 });
 
 var User = new mongoose.Schema({
@@ -307,12 +322,22 @@ var User = new mongoose.Schema({
 	last_name: String,
 	auth_id: String,
 	email: String,
-	password: String
+	password: String,
+	created_at: Date,
+	updated_at: Date
+});
+
+var UserSetting = new mongoose.Schema({
+	userId: String,
+	sort_type: String,
+	created_at: Date,
+	updated_at: Date
 });
 
 //Models
 var WordModel = mongoose.model( 'Word', Word );
 var UserModel = mongoose.model( 'User', User );
+var UserSettingModel = mongoose.model( 'UserSetting', UserSetting);
 
 //Get a list of all words
 app.get('/api/words', function(request, response, next) {
@@ -331,16 +356,19 @@ app.get('/api/words', function(request, response, next) {
 
 //Insert a new word
 app.post('/api/words', function( request, response, next ) {
+	var currentTime = Date.now();
 	var word = new WordModel({
 		name: request.body.name,
 		meaning: request.body.meaning,
 		remembered: request.body.remembered,
 		userId: request.user._id,
-		synonyms: request.body.synonyms.toString()
+		synonyms: request.body.synonyms.toString(),
+		created_at: currentTime,
+		updated_at: currentTime
 	});
 	word.save( function( err ) {
 		if( !err ) {
-			return console.log( 'created' );
+			return console.log( 'word updated' );
 		} else {
 			return next( err );
 		}
@@ -355,6 +383,7 @@ app.put('/api/words/:id', function( request, response, next ) {
 		word.name = request.body.name;
 		word.meaning = request.body.meaning;
 		word.remembered = request.body.remembered;
+		word.updated_at = Date.now();
 
 		return word.save( function( err ) {
 			if( !err ) {
@@ -378,6 +407,28 @@ app.delete('/api/words/:id', function( request, response, next ) {
 			} else {
 				next( err );
 			}
+		});
+	});
+});
+
+app.put('/api/user-setting', function(request, response, next) {
+	console.log('updating user setting with id', request.body.id);
+	var currentTime = Date.now();
+	UserSettingModel.findById(request.body.id, function(error, userSetting) {
+		if (error) {
+			return next(error);
+		}
+
+		userSetting.sort_type = request.body.sort_type;
+
+		userSetting.save( function(err) {
+			if (err) {
+				return next(err);
+			}
+
+			console.log( 'user settings updated' );
+
+			return response.send(userSetting);
 		});
 	});
 });
@@ -411,6 +462,8 @@ app.get('/api/meaning', function(request, response, next) {
 });
 
 function afterSignup(userId, callback) {
+	var currentTime = Date.now();
+
 	// create a sample word
 	var word = new WordModel({
 		name: 'Sample',
@@ -419,26 +472,50 @@ function afterSignup(userId, callback) {
 			'On Navigation Bar, Click "Add Word" to insert a new word',
 		remembered: false,
 		userId: userId,
-		synonyms: ''
+		synonyms: '',
+		created_at: currentTime,
+		updated_at: currentTime
 	});
 	word.save( function( error ) {
 		if( error ) {
 			console.log( 'Error occurred in creating sample word' );
 		} else {
-			if (typeof callback === "function") {
-				callback();
-			}
+			// add default user settings
+			var userSetting = new UserSettingModel({
+				userId: userId,
+				sort_type: 'recent-on-top',
+				created_at: currentTime,
+				updated_at: currentTime
+			});
+
+			userSetting.save(function(err) {
+				if (err) {
+					console.log('Error occurred in creating default settings');
+				} else if (typeof callback === "function") {
+					callback();
+				}
+			});
 		}
 	});
 }
 
 function getWordsForUser(userId, callback) {
 	WordModel.find({ 'userId': userId },
-			'name meaning synonyms remembered', function(err, words) {
+			'name meaning synonyms remembered updated_at', function(err, words) {
 		if( !err ) {
 			return callback(null, words);
 		} else {
 			return callback(err);
+		}
+	});
+}
+
+function getUserSettings(userId, callback) {
+	UserSettingModel.find({ 'userId': userId }, function(error, settings) {
+		if (error) {
+			return callback(error);
+		} else {
+			return callback(null, settings[0]);
 		}
 	});
 }

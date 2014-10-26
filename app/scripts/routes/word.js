@@ -11,10 +11,13 @@ define([
 	'views/edit_word_view',
 	'views/no_words_view',
 	'views/search_view',
+	'views/sort_type_view',
 	'collections/dictionary',
+	'models/userSetting'
 
 ], function ($, Backbone, DictionaryView, NavBarView, AddWordView, GameView,
-		NotificationView, EditWordView, NoWordsView, SearchView, DictionaryCollection) {
+		NotificationView, EditWordView, NoWordsView, SearchView, SortTypeView,
+		DictionaryCollection, UserSetting) {
 	'use strict';
 
 	var WordRouter = Backbone.Router.extend({
@@ -29,6 +32,12 @@ define([
 		initialize: function(route) {
 			var that = this;
 			window.app = _.extend({}, Backbone.Events);
+
+			window.settings.id = window.settings._id;
+			this.settings = new UserSetting(window.settings);
+
+			// bind sort_type change
+			this.listenTo(this.settings, 'change:sort_type', this.repaint);
 
 			this.dictionaryCollection = new DictionaryCollection();
 
@@ -159,8 +168,10 @@ define([
 		},
 
 		showUnRemembered: function() {
+			var dictionaryCollection = this.dictionaryCollection.unremembered()
+				.getSorted(this.settings.get('sort_type'));
 			var dictionaryView = new DictionaryView({
-				collections: this.dictionaryCollection.unremembered()
+				collections: dictionaryCollection
 			});
 
 			this.setCurrentView(dictionaryView);
@@ -171,7 +182,7 @@ define([
 
 		showRemembered: function() {
 			var dictionaryView = new DictionaryView({
-				collections: this.dictionaryCollection.remembered()
+				collections: this.dictionaryCollection.remembered().getSorted(this.settings.get('sort_type'))
 			});
 
 			this.setCurrentView(dictionaryView);
@@ -182,7 +193,7 @@ define([
 
 		showAll: function() {
 			var dictionaryView = new DictionaryView({
-				collections: this.dictionaryCollection
+				collections: this.dictionaryCollection.getSorted(this.settings.get('sort_type'))
 			});
 
 			this.setCurrentView(dictionaryView);
@@ -225,6 +236,12 @@ define([
 				el: '#navigation'
 			});
 
+			this.sortTypeView = new SortTypeView({
+				el: '#sort-container',
+				collections: this.dictionaryCollection,
+				model: this.settings
+			});
+
 			this.searchView = new SearchView({
 				el: '#search-container',
 				collections: this.dictionaryCollection
@@ -245,6 +262,19 @@ define([
 				// show search view
 				$('#search-container').show();
 			}
+		},
+
+		repaint: function(model, new_sort_type) {
+			var collections = this.currentView.collections.getSorted(new_sort_type);
+
+			var dictionaryView = new DictionaryView({
+				collections: collections
+			});
+
+			this.setCurrentView(dictionaryView);
+
+			$('#wrapper').append(dictionaryView.$el);
+			app.trigger('word:append');
 		}
 
 	});
