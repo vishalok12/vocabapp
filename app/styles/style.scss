@@ -257,7 +257,7 @@ ul {
 	left: 0;
 	top: 0;
 	z-index: 1001;
-	background: rgba(255, 255, 255, 0.9);
+	background: rgba(255, 255, 255, 0.95);
 
 	.edit-word-container {
 		position: relative;
@@ -372,8 +372,8 @@ ul {
 	}
 
 	.stored-value {
-		background: $mint-green;
-		border: 1px solid $granny-smith-apple;
+		// background: $mint-green;
+		// border: 1px solid $granny-smith-apple;
 		text-align: left;
 		min-height: 1.8em;
 		cursor: pointer;
@@ -388,6 +388,7 @@ ul {
 		height: 100%;
 		display: none;
 		resize: none;
+		overflow: hidden;
 	}
 
 	.stored-value, .edit-value {
@@ -407,8 +408,9 @@ ul {
 		position: absolute;
 		top: 0;
 		right: 0;
+		height: 100%;
 		font-size: 16px;
-		color: #8CD892;
+		color: $scorpion;
 		padding: 16px 12px 14px;
 		cursor: move;
 	}
@@ -662,16 +664,14 @@ ul {
 	position: fixed;
 	top: 51px;
 	left: 0;
-	width: 100%;
 	background: rgba(128, 128, 128, 0.95);
 	color: white;
 	height: 42px;
 	font-size: 18px;
-	padding: 2px 16px;
 	z-index: 1001;
 
 	.undo-text {
-		line-height: 42px;
+		line-height: 40px;
 	}
 
 	.undo-action {
@@ -735,6 +735,11 @@ ul {
 		float: none;
 		width: 100%;
 	}
+
+	#notification {
+		width: 100%;
+		padding: 0 10px;
+	}
 }
 
 @media (min-width: 768px) {
@@ -767,7 +772,9 @@ ul {
 	#notification {
 		top: 51px;
 		left: 39%;
-		width: 22%;
+		padding: 2px 16px;
+		padding-right: 74px;
+		width: auto;
 	}
 
 	.bottom-nav {

@@ -25,7 +25,7 @@ define([
 			this.meaningViews = [];
 
 			var meanings = this.model.get('meaning').split(';').filter(function(meaning) {
-				return meaning;
+				return meaning.trim();
 			});
 			var meaningView;
 
