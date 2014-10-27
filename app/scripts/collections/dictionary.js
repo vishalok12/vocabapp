@@ -47,6 +47,11 @@ define([
 						return model.get('updated_at');
 					}));
 
+				case 'custom':
+					return new DictionaryCollection(this.sortBy(function(model) {
+						return model.get('position');
+					}));
+
 				default:
 					return this;
 			}

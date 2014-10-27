@@ -313,6 +313,7 @@ var Word = new mongoose.Schema({
 	synonyms: String,
 	remembered: Boolean,
 	userId: String,
+	position: Number,
 	created_at: Date,
 	updated_at: Date
 });
@@ -363,6 +364,7 @@ app.post('/api/words', function( request, response, next ) {
 		remembered: request.body.remembered,
 		userId: request.user._id,
 		synonyms: request.body.synonyms.toString(),
+		position: request.body.position,
 		created_at: currentTime,
 		updated_at: currentTime
 	});
@@ -383,6 +385,7 @@ app.put('/api/words/:id', function( request, response, next ) {
 		word.name = request.body.name;
 		word.meaning = request.body.meaning;
 		word.remembered = request.body.remembered;
+		word.position = request.body.position;
 		word.updated_at = Date.now();
 
 		return word.save( function( err ) {
@@ -436,9 +439,7 @@ app.put('/api/user-setting', function(request, response, next) {
 app.get('/api/meaning', function(request, response, next) {
 	var phrase = request.query.phrase;
 
-	console.log('Getting meaning for phrase:', phrase);
-
-	https.get(
+	var httpsReq = https.get(
 		'https://glosbe.com/gapi/translate?from=eng&dest=eng&format=json&phrase=' +
 		phrase + '&pretty=true',
 		function(res) {
@@ -459,6 +460,10 @@ app.get('/api/meaning', function(request, response, next) {
 			}
 		}
 	);
+
+	httpsReq.on('error', function(e) {
+		next(new Error('error while fetching meaning', e.message));
+	});
 });
 
 function afterSignup(userId, callback) {
@@ -473,6 +478,7 @@ function afterSignup(userId, callback) {
 		remembered: false,
 		userId: userId,
 		synonyms: '',
+		position: 10000,
 		created_at: currentTime,
 		updated_at: currentTime
 	});
@@ -501,7 +507,7 @@ function afterSignup(userId, callback) {
 
 function getWordsForUser(userId, callback) {
 	WordModel.find({ 'userId': userId },
-			'name meaning synonyms remembered updated_at', function(err, words) {
+			'name meaning synonyms remembered position updated_at', function(err, words) {
 		if( !err ) {
 			return callback(null, words);
 		} else {

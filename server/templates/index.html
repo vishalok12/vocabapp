@@ -44,8 +44,10 @@
 		
 		<nav id="navigation" class="nav navbar-default" role="navigation">
 		</nav>
-		<div id="sort-container"></div>
-		<div id="search-container"></div>
+		<div class="bottom-nav">
+			<div id="sort-container"></div>
+			<div id="search-container"></div>
+		</div>
 		<div id="wrapper">
 			<section id="notification" style="display: none;"></section>
 		</div>
@@ -57,22 +59,6 @@
 		<script>
 			window.dictionaryWords = <%- JSON.stringify(dictionaryWords) %>;
 			window.settings = <%- JSON.stringify(settings) %>;
-		</script>
-
-		<script type="text/javascript">
-			(function() {
-				var hoverTimeout;
-
-				window.onscroll = function(e) {
-					$('body').removeClass('hover');
-					
-					clearTimeout(hoverTimeout);
-					hoverTimeout = setTimeout(function() {
-						$('body').addClass('hover');
-					}, 1000);
-				}
-			})();
-			
 		</script>
 
 		<script type="text/javascript">

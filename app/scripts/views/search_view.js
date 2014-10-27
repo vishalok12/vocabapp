@@ -29,6 +29,8 @@ define([
 
 			// clear search text after page change
 			this.listenTo(app, 'page:change', this.clear);
+			this.listenTo(options.collections, "add", this.addWord);
+			this.listenTo(options.collections, "destroy", this.removeWord);
 
 			// DOM variables
 			this.$input = this.$el.find('#word-search');
@@ -82,13 +84,13 @@ define([
 		},
 
 		addWord: function(word) {
-			this.words.push(word);
+			this.words.push(word.get('name'));
 			this.parseWordsToTree();
 		},
 
 		removeWord: function(word) {
 			var words = this.words;
-			words.splice( words.indexOf(word), 1 );
+			words.splice( words.indexOf(word.get('name').toLowerCase()), 1 );
 			this.parseWordsToTree();
 		},
 

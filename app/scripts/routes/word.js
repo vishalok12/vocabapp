@@ -89,6 +89,16 @@ define([
 			});
 
 			app.on('addword', function(word) {
+				// get word position
+				if (that.dictionaryCollection.length) {
+					var sortedCollection = that.dictionaryCollection.sortBy(function(model) {
+						return model.get('position');
+					});
+					word.position = sortedCollection[sortedCollection.length - 1].get('position') + 10000;
+				} else {
+					word.position = 10000;
+				}
+
 				that.dictionaryCollection.create(word);
 			});
 
@@ -171,12 +181,18 @@ define([
 			var dictionaryCollection = this.dictionaryCollection.unremembered()
 				.getSorted(this.settings.get('sort_type'));
 			var dictionaryView = new DictionaryView({
-				collections: dictionaryCollection
+				collections: dictionaryCollection,
+				arrangeable: this.settings.get('sort_type') === 'custom'
 			});
 
 			this.setCurrentView(dictionaryView);
 
 			$('#wrapper').append(dictionaryView.$el);
+			if (this.settings.get('sort_type') === 'custom') {
+				// bind cards for drag
+				$('.word-card').arrangeable();
+			}
+
 			app.trigger('word:append');
 		},
 
@@ -268,12 +284,18 @@ define([
 			var collections = this.currentView.collections.getSorted(new_sort_type);
 
 			var dictionaryView = new DictionaryView({
-				collections: collections
+				collections: collections,
+				arrangeable: new_sort_type === 'custom'
 			});
 
 			this.setCurrentView(dictionaryView);
 
 			$('#wrapper').append(dictionaryView.$el);
+
+			if (new_sort_type === 'custom') {
+				// bind cards for drag
+				$('.word-card').arrangeable();
+			}
 			app.trigger('word:append');
 		}
 

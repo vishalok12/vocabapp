@@ -8,7 +8,7 @@ define([
 	'views/word_view',
 	'views/search_view',
 	'templates'
-], function ($, _, Backbone, DictionaryCollection, WordView, SearchView, JST) {
+], function ($, _, Backbone, DictionaryCollection, WordView, JST) {
 	'use strict';
 
 	var DictionaryView = Backbone.View.extend({
@@ -20,11 +20,47 @@ define([
 			this.collections = options.collections;
 
 			this.listenTo(this.collections, "add", this.addWord);
-			this.listenTo(this.collections, "destroy", this.removeWord);
 
 			this.wordViews = [];
 
 			this.render();
+
+			var that = this;
+			if (options.arrangeable) {
+				this.wordViews.map(function(wordView, index) {
+					wordView.$el.on('dragarrange', function(e, data) {
+						// TODO: shouldn't use word's selector here
+						var newIndex = $('.word-card').index(this);
+
+						// shift word view to new position
+						var wordViewIndex = that.wordViews.indexOf(wordView);
+						that.wordViews.splice(wordViewIndex, 1);
+						that.wordViews.splice(newIndex, 0, wordView);
+
+						// get new position value
+
+						var prevCardPosition, nextCardPosition, currentCardPosition;
+
+						if (newIndex > 0) {
+							prevCardPosition = that.wordViews[newIndex - 1].model.get('position');
+						} else {
+							prevCardPosition = 0;
+						}
+
+						if (newIndex < that.wordViews.length - 1) {
+							nextCardPosition = that.wordViews[newIndex + 1].model.get('position');
+						}
+
+						if (nextCardPosition) {
+							currentCardPosition = (prevCardPosition + nextCardPosition) / 2;
+						} else {
+							currentCardPosition = prevCardPosition + 10000;
+						}
+
+						wordView.model.save({'position': currentCardPosition});
+					});
+				});
+			}
 		},
 
 		render: function() {
@@ -43,11 +79,6 @@ define([
 
 		addWord: function(word) {
 			this.renderWord(word);
-			this.searchView.addWord( word.get('name') );
-		},
-
-		removeWord: function(word) {
-			this.searchView.removeWord( word.get('name') );
 		},
 
 		renderWord: function(word) {
