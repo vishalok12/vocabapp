@@ -112,7 +112,7 @@ define([
 					});
 					that.$('.meaning-list-cont').perfectScrollbar({
 						wheelSpeed: 20,
-						wheelPropagation: true,
+						// wheelPropagation: true,
 						suppressScrollX: true
 					});
 				} else {

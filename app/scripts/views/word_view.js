@@ -173,7 +173,7 @@ define([
 		afterAppend: function() {
 			this.$('.meaning').perfectScrollbar({
 				wheelSpeed: 20,
-				wheelPropagation: true,
+				// wheelPropagation: true,
 				suppressScrollX: true
 			});
 		},
