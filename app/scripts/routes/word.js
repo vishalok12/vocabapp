@@ -273,10 +273,10 @@ define([
 
 			if (routeEvent === 'add word' || routeEvent === 'loop') {
 				// hide search view
-				$('#search-container').hide();
+				$('.bottom-nav').hide();
 			} else {
 				// show search view
-				$('#search-container').show();
+				$('.bottom-nav').show();
 			}
 		},
 
