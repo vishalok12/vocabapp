@@ -120,7 +120,6 @@ define([
 
 					// render filtered words
 					var dictionaryView = new DictionaryView({
-						wordType: '',
 						collections: searchWordCollection
 					});
 
