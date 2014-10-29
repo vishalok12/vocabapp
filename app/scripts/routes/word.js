@@ -249,7 +249,8 @@ define([
 
 		afterWordFetch: function() {
 			this.navBarView = new NavBarView({
-				el: '#navigation'
+				el: '#navigation',
+				guest: window.IS_GUEST
 			});
 
 			this.sortTypeView = new SortTypeView({

@@ -21,7 +21,12 @@
           <li class="menu"><a href="#/play/loop">Loop</a></li>
         </ul>
       </li>
-      <li class="menu logout"><a href="/logout">Logout</a></li>
+
+      <% if (!guest) { %>
+      	<li class="menu logout"><a href="/logout">Logout</a></li>
+      <% } else { %>
+      	<li class="menu signup"><a href="/signup">Signup</a></li>
+      <% } %>
     </ul>
   </div>
 </div>

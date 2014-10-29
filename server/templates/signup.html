@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+
+		<title>WordTray</title>
+
+		<script type="text/javascript">
+
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-43963934-1']);
+			_gaq.push(['_setDomainName', 'www.wordtray.com']);
+			_gaq.push(['_trackPageview', '/homepage.html']);
+
+		</script>
+
+		<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+		<!-- build:css({app,.tmp}) styles/homepage.css -->
+		<link rel="stylesheet" href="/bower_components/sass-bootstrap/dist/css/bootstrap.css">
+		<link rel="stylesheet" href="/bower_components/fontawesome/css/font-awesome.css">
+		<link rel="stylesheet" href="/styles/landing-page.css" type="text/css" media="screen">
+		<!-- endbuild -->
+	</head>
+	<body>
+		<script>
+			window.fbAsyncInit = function() {
+				FB.init({
+					appId      : '1507910726123739',
+					xfbml      : true,
+					version    : 'v2.1'
+				});
+			};
+
+			(function(d, s, id){
+				 var js, fjs = d.getElementsByTagName(s)[0];
+				 if (d.getElementById(id)) {return;}
+				 js = d.createElement(s); js.id = id;
+				 js.src = "//connect.facebook.net/en_US/sdk.js";
+				 fjs.parentNode.insertBefore(js, fjs);
+			 }(document, 'script', 'facebook-jssdk'));
+		</script>
+		
+		<section class="intro container">
+			<div class="intro-content">
+
+				<a href="/auth/facebook" class="btn signup-btn-facebook">
+					<span class="logo">
+						<i class="fa fa-facebook"></i>
+					</span>
+					<span class="text">Sign Up with Facebook</span>
+				</a>
+
+				<div class="signup-divider">or</div>
+
+				<div class="signup-form">
+					<form id="reg" method="post" name="reg" action="/signup">
+						<div class="form-group row">
+							<div class="col-xs-12">
+								<input class="form-input form-control" type="text" name="firstName" placeholder="First Name" required>
+							</div>
+						</div>
+						<div class="form-group row">
+							<div class="col-xs-12">
+								<input class="form-input form-control" type="text" name="lastName" placeholder="Last Name" required>
+							</div>
+						</div>
+						<div class="form-group row">
+							<div class="col-xs-12">
+								<input class="form-input form-control" type="email" name="signup_email" placeholder="Your Email" required>
+							</div>
+						</div>
+						<div class="form-group row">
+							<div class="col-xs-12">
+								<input type="password" name="signup_password" class="form-input form-control" placeholder="Password" required>
+							</div>
+						</div>
+						<div class="form-group">
+							<button type="submit" class="btn btn-block btn-info signup-btn">Sign Up</button>
+						</div>
+					</form>
+
+				</div>
+			</div>
+		</section>
+
+		<section class="details">
+		</section>
+
+		<footer class="footer">
+			<div class="container">
+				<nav class="footer-links">
+					<ul>
+						<li class="active">
+							<a href="#">Home</a>
+						</li>
+						<li>
+							<a href="#">About</a>
+						</li>
+						<li>
+							<a href="#">Blog</a>
+						</li>
+						<li>
+							<a href="#">Contact</a>
+						</li>
+					</ul>
+				</nav>
+				<div class="social-btns">
+					<a href="https://www.facebook.com/wordtray" class="social-btn btn-facebook" rel="publisher"><i class="fa fa-facebook"></i></a>
+					<a href="https://twitter.com/word_tray" class="social-btn btn-twitter" rel="publisher"><i class="fa fa-twitter"></i></a>
+					<a href="https://plus.google.com/113720652947983497661" class="social-btn btn-google-plus" rel="publisher"><i class="fa fa-google-plus"></i></a>
+				</div>
+				<div class="additional-links">
+					Created by <a href="http://twitter.com/vishalok12">Vishal Kumar</a>
+				</div>
+			</div>
+		</footer>
+
+		<script type="text/javascript">
+			(function() {
+				var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+			})();
+		</script>
+	</body>
+</html>

@@ -79,7 +79,8 @@ app.configure( function() {
 					} else {
 						return response.render('index.html', {
 							dictionaryWords: words,
-							settings: settings
+							settings: settings,
+							guest: request.user.is_guest
 						});
 					}
 				});
@@ -135,6 +136,8 @@ var FACEBOOK_APP_ID = process.env.FACEBOOK_APP_ID || '1507910726123739';
 var FACEBOOK_APP_SECRET = process.env.FACEBOOK_APP_SECRET || 'secret-should-not-be-disclosed';
 var WEBSITE_URL = (app.get('env') === "production") ? "www.wordtray.com" : "localhost:9000";
 
+
+// TODO: Don't create new user for existing guest account (as done in normal signup)
 passport.use(new FacebookStrategy({
 		clientID: FACEBOOK_APP_ID,
 		clientSecret: FACEBOOK_APP_SECRET,
@@ -191,8 +194,8 @@ app.get('/auth/facebook', passport.authenticate('facebook'));
 // access was granted, the user will be logged in.  Otherwise,
 // authentication has failed.
 app.get('/auth/facebook/callback',
-  passport.authenticate('facebook', { successRedirect: '/',
-                                      failureRedirect: '/login' }));
+	passport.authenticate('facebook', { successRedirect: '/',
+																			failureRedirect: '/login' }));
 
 passport.use(new LocalStrategy(
 	function(username, password, done) {
@@ -242,12 +245,79 @@ app.get('/logout', function(request, response) {
 	response.redirect('/');
 });
 
+app.get('/signup', function(request, response) {
+	console.log(request.user);
+	if (request.user && !request.user.is_guest) {
+		return response.redirect('/');
+	}
+
+	// render signup page
+	response.render('signup.html');
+});
+
 // signup
+
+/**
+ * Create session for guest access
+ * All words will be accessed through client storage
+ * From next time, user will be re-directed to that page instead of signup page
+ * @param  {[type]} request
+ * @param  {[type]} response
+ */
+app.post('/signup/guest', function(request, response, next) {
+	// check if user already exists
+
+	var currentTime = new Date();
+	var user = new UserModel({
+		first_name: 'Guest',
+		last_name: 'Guest',
+		is_guest: true,
+		created_at: currentTime,
+		updated_at: currentTime
+	});
+
+	user.save(function( err, user ) {
+		if( !err ) {
+			console.log('New Guest User has been created!');
+			request.login(user, function(error) {
+				if (error) { return next(error); }
+
+				afterSignup(user._id, function() {
+					return response.redirect('/');
+				});
+
+				return;
+			});
+
+		} else {
+			next(err);
+		}
+	});
+});
+
 app.post('/signup', function(request, response, next) {
 	var email = request.body.signup_email.trim();
 	var password = request.body.signup_password;
 	var firstName = request.body.firstName.trim();
 	var lastName = request.body.lastName.trim();
+
+	// check if user has a session with guest account
+	// and if there is, no need to create new account
+	// just update existing account
+	if (request.user) {
+		// update user
+		var user = request.user;
+		user.email = email;
+		user.password = password;
+		user.first_name = firstName;
+		user.last_name = lastName;
+		user.updated_at = new Date();
+		user.is_guest = false;	// no more guest user
+
+		user.save();
+
+		return response.redirect('/');
+	}
 
 	// check if user already exists
 	UserModel.findOne( {email: email}, function(err, oldUser) {
@@ -267,6 +337,7 @@ app.post('/signup', function(request, response, next) {
 				last_name: lastName,
 				email: email,
 				password: password,
+				is_guest: false,
 				created_at: currentTime,
 				updated_at: currentTime
 			});
@@ -324,6 +395,7 @@ var User = new mongoose.Schema({
 	auth_id: String,
 	email: String,
 	password: String,
+	is_guest: Boolean,
 	created_at: Date,
 	updated_at: Date
 });

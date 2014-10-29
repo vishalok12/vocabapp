@@ -11,16 +11,16 @@ define([
 		template: JST['app/scripts/templates/navbar.ejs'],
 
 		events: {
-			'click .menu:not(".dropdown,.logout")': "makeCurrent"
+			'click .menu:not(".dropdown,.logout,.signup")': "makeCurrent"
 		},
 
-		initialize: function() {
-			this.render();
+		initialize: function(options) {
+			this.render(options.guest);
 			this.$target = this.$el.find('#navbar-collapse-1');
 		},
 
-		render: function() {
-			this.$el.html( this.template() );
+		render: function(isGuest) {
+			this.$el.html( this.template({ guest: isGuest }) );
 
 			return this;
 		},
