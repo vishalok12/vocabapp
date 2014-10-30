@@ -474,9 +474,8 @@ ul {
 
 	&:focus {
 		background-position: 0 -34px;
-		box-shadow: 0 0 2px rgb(0, 211, 51);
-		border-color: transparent;
 		outline: none;
+		border-bottom: 1px solid rgba(161, 210, 255, 0.3);
 	}
 }
 
