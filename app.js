@@ -209,9 +209,10 @@ passport.use(new LocalStrategy(
 		username = username.trim();
 		password = password.trim();
 
-		UserModel.findOne( {email: username}, function(err, user) {
+		UserModel.findOne( {email: username, password: password}, function(err, user) {
 			if (!err) {
-				if (user && user.password === password) {
+				console.log('user', user);
+				if (user) {
 					return done(null, user);
 				} else {
 					return done(err, false, { message: 'Invalid password' });
