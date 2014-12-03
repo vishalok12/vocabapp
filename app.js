@@ -28,7 +28,10 @@ app.configure( function() {
 
 	app.use( express.cookieParser() );
 
-	app.use(express.session({secret: process.env.SESSION_SECRET || '1234567890QWERTY'}));
+	app.use(express.session({
+		secret: process.env.SESSION_SECRET || '1234567890QWERTY',
+		cookie: { maxAge: 60 * 60 * 24 * 30 * 6 }	// 6 months session
+	}));
 	app.use(passport.initialize());
 	app.use(passport.session());
 
