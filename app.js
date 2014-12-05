@@ -13,6 +13,17 @@ var application_root = __dirname,
 	FacebookStrategy = require('passport-facebook').Strategy,
 	morgan = require('morgan');
 
+if (process.env.REDISTOGO_URL) {
+	var rtg   = require("url").parse(process.env.REDISTOGO_URL);
+	var client = require("redis").createClient(rtg.port, rtg.hostname);
+
+	client.auth(rtg.auth.split(":")[1]);
+} else {
+	var client = require("redis").createClient();
+}
+var session = require('express-session');
+var RedisStore = require('connect-redis')(session);
+
 //Create server
 var app = express();
 var unittest = process.argv.indexOf("--unittest") > -1;
@@ -28,10 +39,16 @@ app.configure( function() {
 
 	app.use( express.cookieParser() );
 
-	app.use(express.session({
-		secret: process.env.SESSION_SECRET || '1234567890QWERTY',
-		cookie: { maxAge: 60 * 60 * 24 * 30 * 6 }	// 6 months session
+	app.use(session({
+	    store: new RedisStore({
+	    	client: client,
+	    	host: 'localhost',
+	    	port: 6379
+	    }),
+			secret: process.env.SESSION_SECRET || '1234567890QWERTY'
+			// cookie: { maxAge: 60 * 60 * 24 * 30 * 6 }	// 6 months session
 	}));
+
 	app.use(passport.initialize());
 	app.use(passport.session());
 
