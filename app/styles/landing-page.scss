@@ -151,7 +151,7 @@ a {
 	margin-top: 50px;
 	color: rgb(255, 255, 255);
 	font-size: 16px;
-	width: 300px;
+	width: 290px;
 
 	&:hover {
 		border: 1px solid rgb(30, 65, 146);
@@ -181,11 +181,6 @@ a {
 }
 
 #login-page {
-	.footer {
-		position: absolute;
-		width: 100%;
-		bottom: 0;
-	}
 
 	.login-container {
 		text-align: center;
@@ -200,6 +195,30 @@ a {
 }
 
 .guest-registration {
-	width: 300px;
+	max-width: 300px;
 	margin: 0 auto;
+
+	.btn-block {
+		font-size: 16px;
+	}
+}
+
+@media (min-width: 320px) {
+	#login-page {
+		.footer {
+			position: static;
+			margin-top: 30px;
+		}
+	}
+}
+
+@media (min-width: 768px) {
+	#login-page {
+		.footer {
+			margin-top: 30px;
+			position: absolute;
+			width: 100%;
+			bottom: 0;
+		}
+	}
 }
