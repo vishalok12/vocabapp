@@ -43,7 +43,8 @@ app.configure( function() {
 	    store: new RedisStore({
 	    	client: client,
 	    	host: 'localhost',
-	    	port: 6379
+	    	port: 6379,
+				ttl: 60 * 60 * 24 * 30 * 6 // 6 months session
 	    }),
 			secret: process.env.SESSION_SECRET || '1234567890QWERTY'
 			// cookie: { maxAge: 60 * 60 * 24 * 30 * 6 }	// 6 months session
