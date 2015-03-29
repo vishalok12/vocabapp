@@ -14,7 +14,8 @@
     "passport-facebook": "^1.0.3",
     "connect-redis": "^2.1.0",
     "express-session": "^1.9.3",
-    "redis": "^0.12.1"
+    "redis": "^0.12.1",
+    "cors": "^2.5.3"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
