@@ -11,7 +11,8 @@ var application_root = __dirname,
 	passport = require('passport'),
 	LocalStrategy = require('passport-local').Strategy,
 	FacebookStrategy = require('passport-facebook').Strategy,
-	morgan = require('morgan');
+	morgan = require('morgan'),
+	cors = require('cors');
 
 if (process.env.REDISTOGO_URL) {
 	var rtg   = require("url").parse(process.env.REDISTOGO_URL);
@@ -31,6 +32,7 @@ var unittest = process.argv.indexOf("--unittest") > -1;
 // Configure server
 app.configure( function() {
 	app.use(morgan('common'));
+
 	//parses request body and populates request.body
 	app.use( express.bodyParser() );
 
@@ -40,18 +42,20 @@ app.configure( function() {
 	app.use( express.cookieParser() );
 
 	app.use(session({
-	    store: new RedisStore({
-	    	client: client,
-	    	host: 'localhost',
-	    	port: 6379,
-				ttl: 60 * 60 * 24 * 30 * 6 // 6 months session
-	    }),
-			secret: process.env.SESSION_SECRET || '1234567890QWERTY'
-			// cookie: { maxAge: 60 * 60 * 24 * 30 * 6 }	// 6 months session
+		store: new RedisStore({
+			client: client,
+			host: 'localhost',
+			port: 6379,
+			ttl: 60 * 60 * 24 * 30 * 6 // 6 months session
+		}),
+		secret: process.env.SESSION_SECRET || '1234567890QWERTY'
+		// cookie: { maxAge: 60 * 60 * 24 * 30 * 6 }	// 6 months session
 	}));
 
 	app.use(passport.initialize());
 	app.use(passport.session());
+
+	app.use(cors());
 
 	//perform route lookup based on url and HTTP method
 	app.use( app.router );
