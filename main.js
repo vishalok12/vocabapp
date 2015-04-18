@@ -624,10 +624,4 @@ function getUserSettings(userId, callback) {
 	});
 }
 
-//Start server
-var port = process.env.PORT || 9000;
-
-app.listen( port, function() {
-	console.log( 'Express server listening on port %d in %s mode', port, app.settings.env );
-});
-
+module.exports = app;
