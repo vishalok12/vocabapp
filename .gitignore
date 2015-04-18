@@ -10,3 +10,9 @@ test/bower_components/
 newrelic.js
 newrelic_agent.log
 dump.rdb
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+
