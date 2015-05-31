@@ -5,8 +5,6 @@ var application_root = __dirname,
 	appDirectory = process.env.NODE_ENV === 'production' ? 'dist' : 'app',
 	express = require( 'express' ), //Web framework
 	path = require( 'path' ), //Utilities for dealing with file paths
-	mongoose = require( 'mongoose' ), //MongoDB integration
-	https = require('https'),
 	qs = require('querystring'),
 	passport = require('passport'),
 	LocalStrategy = require('passport-local').Strategy,
@@ -28,6 +26,11 @@ var RedisStore = require('connect-redis')(session);
 //Create server
 var app = express();
 var unittest = process.argv.indexOf("--unittest") > -1;
+
+var dbModels = require('./schema');
+var WordModel = dbModels.WordModel;
+var UserModel = dbModels.UserModel;
+var UserSettingModel = dbModels.UserSettingModel;
 
 // Configure server
 app.configure( function() {
@@ -250,14 +253,6 @@ passport.use(new LocalStrategy(
 ));
 
 // Routes
-app.all('/api/*', function(request, response, next) {
-	if (request.isAuthenticated()) {
-		next();
-	} else {
-		response.send(401, 'Unauthorized');
-	}
-});
-
 app.get('/login', function(request, response) {
 	if (request.isAuthenticated()) {
 		return response.redirect('/');
@@ -397,172 +392,7 @@ app.post('/session',
 	})
 );
 
-//Connect to database
-var mongoUri = process.env.MONGOLAB_URI ||
-	process.env.MONGOHQ_URL ||
-	'mongodb://localhost/vocab_database';
-mongoose.connect( mongoUri );
-
-//Schemas
-var Word = new mongoose.Schema({
-	name: String,
-	meaning: String,
-	synonyms: String,
-	remembered: Boolean,
-	userId: String,
-	position: Number,
-	created_at: Date,
-	updated_at: Date
-});
-
-var User = new mongoose.Schema({
-	first_name: String,
-	last_name: String,
-	auth_id: String,
-	email: String,
-	password: String,
-	is_guest: Boolean,
-	created_at: Date,
-	updated_at: Date
-});
-
-var UserSetting = new mongoose.Schema({
-	userId: String,
-	sort_type: String,
-	created_at: Date,
-	updated_at: Date
-});
-
-//Models
-var WordModel = mongoose.model( 'Word', Word );
-var UserModel = mongoose.model( 'User', User );
-var UserSettingModel = mongoose.model( 'UserSetting', UserSetting);
-
-//Get a list of all words
-app.get('/api/words', function(request, response, next) {
-	var userId;
-
-	userId = request.user._id;
-
-	return getWordsForUser(userId, function(err, words) {
-		if (err) {
-			return next(err);
-		} else {
-			return response.send(words);
-		}
-	});
-});
-
-//Insert a new word
-app.post('/api/words', function( request, response, next ) {
-	var currentTime = Date.now();
-	var word = new WordModel({
-		name: request.body.name,
-		meaning: request.body.meaning,
-		remembered: request.body.remembered,
-		userId: request.user._id,
-		synonyms: request.body.synonyms.toString(),
-		position: request.body.position,
-		created_at: currentTime,
-		updated_at: currentTime
-	});
-	word.save( function( err ) {
-		if( !err ) {
-			return console.log( 'word updated' );
-		} else {
-			return next( err );
-		}
-	});
-	return response.send( word );
-});
-
-//Update a word
-app.put('/api/words/:id', function( request, response, next ) {
-	console.log( 'Updating word ' + request.body.name );
-	return WordModel.findById( request.params.id, function( err, word ) {
-		word.name = request.body.name;
-		word.meaning = request.body.meaning;
-		word.remembered = request.body.remembered;
-		word.position = request.body.position;
-		word.updated_at = Date.now();
-
-		return word.save( function( err ) {
-			if( !err ) {
-				console.log( 'word updated' );
-			} else {
-				next( err );
-			}
-			return response.send( word );
-		});
-	});
-});
-
-//Delete a word
-app.delete('/api/words/:id', function( request, response, next ) {
-	console.log( 'Deleting word with id: ' + request.params.id );
-	return WordModel.findById( request.params.id, function( err, word ) {
-		return word.remove( function( err ) {
-			if( !err ) {
-				console.log( 'word removed' );
-				return response.send( '' );
-			} else {
-				next( err );
-			}
-		});
-	});
-});
-
-app.put('/api/user-setting', function(request, response, next) {
-	console.log('updating user setting with id', request.body.id);
-	var currentTime = Date.now();
-	UserSettingModel.findById(request.body.id, function(error, userSetting) {
-		if (error) {
-			return next(error);
-		}
-
-		userSetting.sort_type = request.body.sort_type;
-
-		userSetting.save( function(err) {
-			if (err) {
-				return next(err);
-			}
-
-			console.log( 'user settings updated' );
-
-			return response.send(userSetting);
-		});
-	});
-});
-
-app.get('/api/meaning', function(request, response, next) {
-	var phrase = request.query.phrase;
-
-	var httpsReq = https.get(
-		'https://glosbe.com/gapi/translate?from=eng&dest=eng&format=json&phrase=' +
-		phrase + '&pretty=true',
-		function(res) {
-			var str = '';
-
-			console.log('response for meaning came with status code', res.statusCode);
-			if (res.statusCode === 200) {
-				res.on('data', function(chunk){
-					//do something with chunk
-					str += chunk;
-				});
-
-				res.on("end", function() {
-					response.send(JSON.parse(str));
-				});
-			} else {
-				next(new Error('error while fetching meaning'));
-			}
-		}
-	);
-
-	httpsReq.on('error', function(e) {
-		next(new Error('error while fetching meaning', e.message));
-	});
-});
+require('./api').setup(app);
 
 function afterSignup(userId, callback) {
 	var currentTime = Date.now();

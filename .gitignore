@@ -10,6 +10,7 @@ test/bower_components/
 newrelic.js
 newrelic_agent.log
 dump.rdb
+npm-debug.log
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*

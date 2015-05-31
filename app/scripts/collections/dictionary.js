@@ -6,7 +6,7 @@ define([
 	'use strict';
 
 	var DictionaryCollection = Backbone.Collection.extend({
-		url: 'api/words',
+		url: '/api/words',
 		model: wordModel,
 
 		unremembered: function() {
